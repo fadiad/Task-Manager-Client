@@ -1,13 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BoardStore } from './store/BoardStore'
+import { Provider } from 'mobx-react'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+const boardStore = new BoardStore()
+
+const store = {
+  boardStore
+}
+
+
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider {...store}>
+      <App />
+    </Provider>
   </React.StrictMode>
 );
 
