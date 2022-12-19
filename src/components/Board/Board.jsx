@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { observer, inject } from 'mobx-react'
 import Status from './Status'
-import '../style/board.css'
+import '../../style/board.css'
 import AddStatus from './AddStatus'
 import { DragDropContext } from "react-beautiful-dnd";
 
