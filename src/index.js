@@ -1,25 +1,34 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { BoardStore } from './store/BoardStore'
-import { Provider } from 'mobx-react'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+import { BoardStore } from "./store/BoardStore";
+import { Provider } from "mobx-react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AuthStore } from "./store/AuthStore";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 
-const boardStore = new BoardStore()
+const boardStore = new BoardStore();
+const authStore= new AuthStore()
 
 const store = {
-  boardStore
-}
-
+  boardStore,
+  authStore,
+};
 
 root.render(
-  <React.StrictMode>
-    <Provider {...store}>
-      <App />
-    </Provider>
-  </React.StrictMode>
+  <BrowserRouter>
+    <Routes>
+      <Route path="/*" element={
+          <Provider {...store}>
+            <App />
+          </Provider>
+        }
+      />
+    </Routes>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function

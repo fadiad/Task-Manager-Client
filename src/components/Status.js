@@ -1,7 +1,7 @@
 
 import React from 'react'
 import MyCard from './MyCard';
-import '../style/board.css'
+import '../pages/Board/board.css'
 import AddCard from './AddCard';
 import { Droppable } from "react-beautiful-dnd";
 
