@@ -1,10 +1,11 @@
-import Board from "./components/Board";
+import Board from "./components/Board/Board";
+import User from "./components/User/User";
 
 
 function App() {
   return (
     <div>
-      <Board />
+      <User></User>
     </div>
   );
 }
