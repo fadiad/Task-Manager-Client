@@ -1,7 +1,6 @@
-
 import React from 'react'
 import MyCard from './MyCard';
-import '../pages/Board/board.css'
+import '../../pages/Board/board.css'
 import AddCard from './AddCard';
 import { Droppable } from "react-beautiful-dnd";
 
@@ -23,7 +22,7 @@ const Status = ({ status }) => {
                         {status.title}
                     </h4>
 
-                    {status.cards.map((c, index) => {
+                    {status.cards.map((c) => {
                         return (
                             <MyCard card={c} key={c.id} id={c.id} index={c.id} />
                         )
@@ -35,8 +34,6 @@ const Status = ({ status }) => {
 
                 </div>
             )}
-
-
 
         </Droppable>
 

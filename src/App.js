@@ -5,6 +5,7 @@ import Login from './pages/Login/Login';
 import Layout from './components/Layout/Layout';
 import Unauthorized from './components/Unauthorized/Unauthorized';
 import Missing from './components/Unauthorized/Missing';
+import User from "./pages/User/User";
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="unauthorized" element={<Unauthorized />} />
-
+        <Route path="user" element={<User />} />
+          
         {/* { we want to protect these routes
         <Route element={<RequireAuth />}>
           <Route path="/" element={<MainChat />} />

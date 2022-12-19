@@ -32,4 +32,12 @@ export const hints = {
     pwd: PASS_HINT,
     email: EMAIL_HINT,
     matchPwd:MATCH_PASS_HINT
-}                       
+}   
+
+
+export const itemsTypes =[
+    "TASK",
+    "BUG",
+    "SUBTASK",
+    "TESTING",
+]

@@ -82,9 +82,20 @@ export class BoardStore {
         // this.listOfStatuses = newList;
     }
 
+    createBoard = async (title, types) => {
+        console.log(title, types);
+        const body = {
+            title: title,
+            types: types
+        }
 
+        // let data = await fetch(`http://localhost:8080/`, {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(body)
+        // })
 
-
+    }
 
 }
 
