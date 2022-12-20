@@ -15,7 +15,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="unauthorized" element={<Unauthorized />} />
-        <Route path="user" element={<User />} />
+        <Route path="/" element={<User />} />
           
         {/* { we want to protect these routes
         <Route element={<RequireAuth />}>

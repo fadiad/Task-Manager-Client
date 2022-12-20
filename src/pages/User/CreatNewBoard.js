@@ -21,9 +21,10 @@ import InputLabel from "@mui/material/InputLabel";
 //--------------------
 import { observer, inject } from "mobx-react";
 import "./user.css";
+import axios from "../../api/axios";
+const CREATE_BOARD = "/user/board-create";
 
 function CreatNewBoard(props) {
-  
   const [chosedTypeList, setChosedTypeList] = useState({
     TASK: false,
     BUG: false,
@@ -43,6 +44,15 @@ function CreatNewBoard(props) {
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleClickOpen = () => {
+    const checkedTypes = {};
+    itemsTypes.forEach((type) => (checkedTypes[type] = false));
+    console.log(props.types);
+
+    if (props.types !== undefined) {
+      props.types.forEach((type) => (checkedTypes[type] = true));
+    }
+
+    setChosedTypeList(checkedTypes);
     setOpen(true);
   };
 
@@ -50,9 +60,20 @@ function CreatNewBoard(props) {
     setOpen(false);
   };
 
-  const createBoard = () => {
-    props.boardStore.createBoard(title, chosedTypeList);
-    setOpen(false);
+  const createBoard = async () => {
+    if (title.trim() !== "") {
+      const checkedTypes = itemsTypes.filter((item) => chosedTypeList[item]);
+      try {
+        const res = await axios.post(CREATE_BOARD, {
+          title,
+          itemTypes: checkedTypes,
+        });
+        setOpen(false);
+      } catch (error) {
+        console.log(error);
+      }
+
+    }
   };
 
   const handleTitleChange = (e) => {
@@ -68,7 +89,7 @@ function CreatNewBoard(props) {
   //---------List---------
   const handleToggle = (value) => () => {
     let temp = { ...chosedTypeList };
-
+    const item = itemsTypes;
     if (temp[value] === true) temp[value] = false;
     else if (temp[value] === false) temp[value] = true;
 
@@ -78,7 +99,7 @@ function CreatNewBoard(props) {
   return (
     <div className="creactNewBoard">
       <Button variant="outlined" onClick={handleClickOpen}>
-        Creact new Board
+        {`${props.text} Board`}
       </Button>
 
       <Dialog
@@ -97,7 +118,7 @@ function CreatNewBoard(props) {
         }}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">Creact new Board</DialogTitle>
+        <DialogTitle id="responsive-dialog-title">{`${props.text} Board`}</DialogTitle>
 
         <br />
         <DialogContent>
@@ -154,7 +175,7 @@ function CreatNewBoard(props) {
 
         <DialogActions>
           <Button autoFocus onClick={createBoard}>
-            Create
+            {props.text}
           </Button>
 
           <Button onClick={handleClose} autoFocus>

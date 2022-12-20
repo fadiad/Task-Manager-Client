@@ -1,4 +1,4 @@
-const USER_REGEX =  /^[a-zA-Z0-9]([_.-](?![_.-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$/;
+const USER_REGEX =/^[a-zA-Z0-9]([_.-](?![_.-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$/;
 const FULL_NAME_REGEX = /^[a-zA-Z]+ [a-zA-Z]+$/;
 const PWD_REGEX =/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,20}$/ 
 const EMAIL_REGEX = /^(?=.{1,64}@)[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$/;
@@ -12,7 +12,7 @@ export const regexObj = {
     matchPwd:PWD_REGEX
 }
 
-const USERNAME_HINT =(<span>4 to 24 characters.<br />
+const USERNAME_HINT =(<span>5 to 24 characters.<br />
 Must begin with a letter and end with a letter<br />
 Letters, numbers, underscores, hyphens and dot are allowed.</span>);
 
@@ -34,10 +34,9 @@ export const hints = {
     matchPwd:MATCH_PASS_HINT
 }   
 
-
 export const itemsTypes =[
     "TASK",
     "BUG",
     "SUBTASK",
     "TESTING",
-]
+  ]

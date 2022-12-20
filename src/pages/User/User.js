@@ -10,7 +10,7 @@ const User = (props) => {
     return (
         <div>
             <h2>User Page</h2>
-            <CreatNewBoard />
+            <CreatNewBoard text="Create"/>
         </div>
     )
 }
