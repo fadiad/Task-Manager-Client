@@ -25,6 +25,7 @@
     "sockjs": "^0.3.24",
     "react-router-dom": "^6.4.3",
     "sockjs-client": "^1.6.1",
+    "react-feather": "^2.0.9",
     "websocket": "^1.0.34"
   },
   "scripts": {
