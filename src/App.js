@@ -1,4 +1,4 @@
-import Board from "./pages/Board/Board";
+import Board from "./pages/Boardfadi/Board";
 import Register from "./pages/Register/Register";
 import { Routes, Route } from "react-router-dom";
 import Login from './pages/Login/Login';
@@ -6,6 +6,7 @@ import Layout from './components/Layout/Layout';
 import Unauthorized from './components/Unauthorized/Unauthorized';
 import Missing from './components/Unauthorized/Missing';
 import User from "./pages/User/User";
+import Dashboard from './pages/Home/Dashboard';
 
 function App() {
   return (
@@ -15,8 +16,8 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="unauthorized" element={<Unauthorized />} />
-        <Route path="/" element={<User />} />
-          
+        {/* <Route path="/" element={<User />} /> */}
+        <Route path="/" element={<Dashboard/>} /> 
         {/* { we want to protect these routes
         <Route element={<RequireAuth />}>
           <Route path="/" element={<MainChat />} />
