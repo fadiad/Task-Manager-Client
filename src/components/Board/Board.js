@@ -5,9 +5,10 @@ import Card from "../Card/Card";
 import Dropdown from "../Dropdown/Dropdown";
 import CustomInput from "../CustomInput/CustomInput";
 
+// import ChoseNotifications from "./ChoseNotifications";
+
 import "./Board.css";
-
-
+import ChoseNotifications from "../../pages/Home/ChoseNotifications";
 
 function Board(props) {
   const {
@@ -21,12 +22,14 @@ function Board(props) {
   } = props;
 
   const [showDropdown, setShowDropdown] = useState(false);
-  
+
   return (
+    
     <div className="board">
+     
       <div className="board-inner" key={board?.id}>
         <div className="board-header">
-          
+
           <p className="board-header-title">
             {board?.title}
             <span>{board?.cards?.length || 0}</span>
@@ -36,7 +39,7 @@ function Board(props) {
             className="board-header-title-more"
             onClick={(event) => {
               event.stopPropagation();
-              setShowDropdown(prev=>!prev)
+              setShowDropdown(prev => !prev)
             }}
           >
             <MoreHorizontal />
@@ -74,7 +77,11 @@ function Board(props) {
           />
         </div>
       </div>
+
+
+
     </div>
+
   );
 }
 

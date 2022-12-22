@@ -1,16 +1,19 @@
 import React, { useState } from "react";
-import { AlignLeft, CheckSquare, Clock, MoreHorizontal } from "react-feather";
+import { AlignLeft, CheckSquare, Clock, MoreHorizontal, Star, User } from "react-feather";
 import Chip from "../Common/Chip";
 import Dropdown from "../Dropdown/Dropdown";
 import "./Card.css";
 import CardInfo from "./CardInfo/CardInfo";
 import { formatDate } from "../../utils/utils";
+import { colorsList } from "../../utils/utils";
 
 
 function Card(props) {
+
+  // const [typeColor, setTypeColor] = useState(colorsList);
   const { card, boardId, removeCard, onDragEnd, onDragEnter, updateCard } =
     props;
-  const { id, title, desc, date, tasks, labels } = card;
+  const { id, title, desc, date, tasks, type, assignTo } = card;
   const [showDropdown, setShowDropdown] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -24,6 +27,8 @@ function Card(props) {
           updateCard={updateCard}
         />
       )}
+
+
       <div
         className="card"
         key={card.id}
@@ -33,11 +38,11 @@ function Card(props) {
         onClick={() => setShowModal(true)}
       >
         <div className="card-top">
+
           <div className="card-top-labels">
-            {labels?.map((item, index) => (
-              <Chip key={index} item={item} />
-            ))}
+            <span style={{ "background-color": colorsList[type], borderRadius: "5px", padding: "5px" }}>{type}</span>
           </div>
+
           <div
             className="card-top-more"
             onClick={(event) => {
@@ -54,13 +59,18 @@ function Card(props) {
                 <p onClick={() => removeCard(boardId, id)}>Delete Card</p>
               </Dropdown>
             )}
+
           </div>
         </div>
+
+
         <div className="card-title">{title}</div>
         <div>
-          <p title={desc}>
+
+          {/* <p title={desc}>
             <AlignLeft />
-          </p>
+          </p> */}
+
         </div>
         <div className="card-footer">
           {date && (
@@ -69,12 +79,20 @@ function Card(props) {
               {formatDate(date)}
             </p>
           )}
-          {tasks && tasks?.length > 0 && (
-            <p className="card-footer-item">
-              <CheckSquare className="card-footer-icon" />
-              {tasks?.filter((item) => item.completed)?.length}/{tasks?.length}
-            </p>
-          )}
+
+
+          {card.assignTo ?
+            <p className="importance-p user">
+              <User size={12} color="black" />
+              <span className="importance-txt"> {card.assignTo.name.charAt(0)}</span>
+            </p> : null
+          }
+          {card.importance ?
+            <p className="importance-p">
+              <span className="importance-txt"> {card.importance}</span>
+              <Star size={15} color="gold" />
+            </p> : null
+          }
         </div>
       </div>
     </>

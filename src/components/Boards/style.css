@@ -1,0 +1,26 @@
+.board-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: rgb(0 0 0 / 9%) 0px 9px 12px, rgb(0 0 0 / 6%) 0px 6px 6px;
+    width: 90%;
+    text-align: center;
+    background-color: #fde3b6;
+    color: #cd853f;
+    border-radius: 10px;
+    font-family: cursive;
+}
+
+.boards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(90px, auto);
+    gap: 15px;
+    margin: 50px;
+}
+
+.board-pag {
+    text-align: center;
+    color: #cd853f;
+    font-family: cursive;
+}

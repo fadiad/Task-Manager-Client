@@ -12,7 +12,7 @@ html {
     sans-serif;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-size: 22px;
+  font-size: 16px;
   color: #fff;
 }
 
@@ -22,5 +22,5 @@ body {
 
 p {
   line-height: 1.875rem;
-  font-size: 1rem;
+  font-size: 0.8rem;
 }

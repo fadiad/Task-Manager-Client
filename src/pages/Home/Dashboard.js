@@ -3,17 +3,22 @@ import Board from "../../components/Board/Board";
 import "./Dashboard.css";
 import CustomInput from "../../components/CustomInput/CustomInput";
 
+import axios from '../../api/axios'
+import ChoseNotifications from "./ChoseNotifications";
+
 function Dashboard() {
   const [boards, setBoards] = useState([
     {
-      id: 1651319512266.7095,
+      id: 1,
       title: "Discover",
       cards: [
         {
-          id: 1651319552926.0933,
+          id: 2,
           title: "Task1",
-          labels: [{ color: "#cf61a1", text: "Urgent" }],
+          type: "BUG",
           date: "2022-05-05",
+          importance: 1,
+          assignTo: { id: 1, name: "Fadi Id" },
           tasks: [
             { id: 1651319625559.8025, completed: true, text: "Task1_subtask1" },
             { id: 1651319629650.8945, completed: true, text: "Task1_subtask2" },
@@ -22,17 +27,47 @@ function Dashboard() {
           desc: "Task1 Detail Description",
         },
         {
-          id: 1651319568365.593,
+          id: 3,
           title: "Task2",
-          labels: [{ color: "#1ebffa", text: "Frontend" }],
-          date: "",
+          assignTo: { id: 1, name: "khaled wany" },
+          importance: 3,
+          type: "TESTING",
+          date: "2022-05-01",
+          tasks: [],
+        },
+      ],
+    }, {
+      id: 6,
+      title: "Discover",
+      cards: [
+        {
+          id: 6,
+          title: "Task1",
+          type: "BUG",
+          date: "2022-05-05",
+          importance: 1,
+          assignTo: { id: 112, name: "Fadi Id" },
+          tasks: [
+            { id: 1651319625559.8025, completed: true, text: "Task1_subtask1" },
+            { id: 1651319629650.8945, completed: true, text: "Task1_subtask2" },
+            { id: 1651319633774.9905, completed: true, text: "Task1_subtask3" },
+          ],
+          desc: "Task1 Detail Description",
+        },
+        {
+          id: 83,
+          title: "Task2",
+          assignTo: { id: 24, name: "khaled wany" },
+          importance: 3,
+          type: "TESTING",
+          date: "2022-05-01",
           tasks: [],
         },
       ],
     },
   ]);
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   const [targetCard, setTargetCard] = useState({
     boardId: 0,
@@ -58,7 +93,13 @@ function Dashboard() {
     setBoards(tempBoardsList);
   };
 
-  const addCardHandler = (boardId, title) => {
+  const addCardHandler = async (boardId, title) => {
+
+    // let res = await axios.post('/item/item-creat', {
+    //   Title: title,
+    //   boardId: boardId
+    // });
+
     const boardIndex = boards.findIndex((item) => item.id === boardId);
     if (boardIndex < 0) return;
 
@@ -66,7 +107,7 @@ function Dashboard() {
     tempBoardsList[boardIndex].cards.push({
       id: Date.now() + Math.random() * 2,
       title,
-      labels: [],
+      type: "",
       date: "",
       tasks: [],
       desc: "",
@@ -89,6 +130,7 @@ function Dashboard() {
   };
 
   const updateCard = (boardId, cardId, card) => {
+    console.log("shit");
     const boardIndex = boards.findIndex((item) => item.id === boardId);
     if (boardIndex < 0) return;
 
@@ -141,6 +183,7 @@ function Dashboard() {
   };
 
   const onDragEnter = (boardId, cardId) => {
+    console.log(boardId, cardId);
     if (targetCard.cardId === cardId) return;
     setTargetCard({
       boardId: boardId,
@@ -151,12 +194,15 @@ function Dashboard() {
   // useEffect(() => {
   //   updateLocalStorageBoards(boards);
   // }, [boards]);
-  
+
   return (
     <div className="app">
       <div className="app-nav">
         <h1>Trello Board</h1>
       </div>
+
+      <ChoseNotifications types={['ITEM_ASSIGNED_TO_ME']} typesWays={['EMAIL']} />
+
       <div className="app-boards-container">
         <div className="app-boards">
           {boards.map((item) => (
