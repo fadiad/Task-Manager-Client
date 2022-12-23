@@ -17,7 +17,8 @@ function App() {
         <Route path="register" element={<Register />} />
         <Route path="unauthorized" element={<Unauthorized />} />
         {/* <Route path="/" element={<User />} /> */}
-        <Route path="/" element={<Dashboard/>} /> 
+        <Route path="/board" element={<Dashboard/>} /> 
+        <Route path="/user" element={<User/>} /> 
         {/* { we want to protect these routes
         <Route element={<RequireAuth />}>
           <Route path="/" element={<MainChat />} />

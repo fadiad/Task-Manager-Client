@@ -2,10 +2,10 @@
   padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
   background-color: #fff;
   border-radius: 10px;
-  box-shadow:rgb(0 0 0 / 9%) 0px 9px 12px, rgb(0 0 0 / 6%) 0px 6px 6px;
+  box-shadow: rgb(0 0 0 / 9%) 0px 9px 12px, rgb(0 0 0 / 6%) 0px 6px 6px;
   cursor: pointer;
 }
 
@@ -47,9 +47,11 @@
 
 .card-title {
   flex: 1;
-  font-weight: bold;
-  font-size: 1rem;
+  /* font-weight: bold; */
+  /* font-size: 1rem; */
+
   line-height: 1.875rem;
+
 }
 
 .card-footer {
@@ -84,4 +86,34 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+
+.importance-p {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.importance-txt {
+  font-weight: bold;
+}
+
+.user {
+  background-color: var(--ds-background-neutral, #f8f8f8);
+  border-radius: 25em;
+  color: var(--ds-text, #172b4d);
+  cursor: pointer;
+  display: block;
+  float: left;
+  height: 32px;
+  margin: 0 4px 4px 0;
+  overflow: visible;
+  position: relative;
+  text-decoration: none;
+  -webkit-user-select: none;
+  user-select: none;
+  width: 32px;
+  z-index: 0;
+  padding: 3px;
 }

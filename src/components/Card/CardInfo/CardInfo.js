@@ -2,12 +2,45 @@ import React, { useEffect, useState } from "react";
 import { Calendar, CheckSquare, List, Tag, Trash, Type } from "react-feather";
 import { colorsList } from "../../../utils/utils";
 import Modal from "../../Modal/Modal";
+import { ChevronDown, ChevronUp } from "react-feather";
+
 import CustomInput from "../../CustomInput/CustomInput";
 
 import "./CardInfo.css";
 import Chip from "../../Common/Chip";
+import Dropdown from "../../Dropdown/Dropdown";
 
 function CardInfo(props) {
+
+  /* */
+  const [showDropdownUsers, setShowDropdownUsers] = useState(false);
+  const [showDropdownTypes, setShowDropdownTypes] = useState(false);
+  const [showDropdownImportance, setShowDropdownImportance] = useState(false);
+
+  const [listOfUsers, setListOfUsers] = useState([
+    {
+      id: 1,
+      name: 'Khaled Wany'
+    },
+    {
+      id: 2,
+      name: 'Fadi Id'
+    },
+    {
+      id: 3,
+      name: 'Saray Shlomi'
+    }
+  ])
+
+
+
+  const [listOfTypes, setlistOfTypes] = useState(['TASK', 'SUBTASK', 'BUG', 'TESTING'])
+
+
+
+  const [importanceList, setImportanceList] = useState([1, 2, 3, 4, 5])
+  /**/
+
   const { onClose, card, boardId, updateCard } = props;
   const [selectedColor, setSelectedColor] = useState("");
   const [cardValues, setCardValues] = useState({
@@ -106,20 +139,54 @@ function CardInfo(props) {
 
   const calculatedPercent = calculatePercent();
 
+
+  const updateImportance = (value) => {
+    setCardValues({ ...cardValues, importance: value });
+  };
+
+  const updateTaskType = (value) => {
+    setCardValues({ ...cardValues, type: value });
+  };
+
+
+  const updateAssignTo = (value) => {
+    setCardValues({ ...cardValues, assignTo: value });
+  };
+
   return (
     <Modal onClose={onClose}>
+
       <div className="cardinfo">
-        <div className="cardinfo-box">
-          <div className="cardinfo-box-title">
-            <Type />
-            <p>Title</p>
+
+        <div className="flex-container">
+          <div className="cardinfo-box">
+
+            <div className="cardinfo-box-title">
+              <Type />
+              <p>Title</p>
+            </div>
+            <CustomInput
+              defaultValue={cardValues.title}
+              text={cardValues.title}
+              placeholder="Enter Title"
+              onSubmit={updateTitle}
+            />
           </div>
-          <CustomInput
-            defaultValue={cardValues.title}
-            text={cardValues.title}
-            placeholder="Enter Title"
-            onSubmit={updateTitle}
-          />
+
+
+          <div className="cardinfo-box">
+            <div className="cardinfo-box-title">
+              <Calendar />
+              <p>Date</p>
+            </div>
+            <input
+              type="date"
+              defaultValue={cardValues.date}
+              min={new Date().toISOString().substr(0, 10)}
+              onChange={(event) => updateDate(event.target.value)}
+            />
+          </div>
+
         </div>
 
         <div className="cardinfo-box">
@@ -135,20 +202,102 @@ function CardInfo(props) {
           />
         </div>
 
-        <div className="cardinfo-box">
-          <div className="cardinfo-box-title">
-            <Calendar />
-            <p>Date</p>
-          </div>
-          <input
-            type="date"
-            defaultValue={cardValues.date}
-            min={new Date().toISOString().substr(0, 10)}
-            onChange={(event) => updateDate(event.target.value)}
-          />
-        </div>
 
-        <div className="cardinfo-box">
+
+        {/* @@@@@@@@@@@@ */}
+
+        <div className="flex-container">
+
+          {/* <div className="cardinfo-box"> */}
+
+          <div
+            className="board-header-title-more"
+            onClick={(event) => {
+              event.stopPropagation();
+              setShowDropdownUsers(prev => !prev)
+            }}
+          >
+            <div className="cardinfo-box-title">
+              <p>Asign User</p>
+            </div>
+
+            {showDropdownUsers && (
+              <Dropdown
+                style="left-drop"
+                class="board-dropdown"
+                onClose={(event) => {
+                  event.stopPropagation();
+                  setShowDropdownUsers(false)
+                }}
+              >
+                {listOfUsers.map(user => <p onClick={() => updateAssignTo(user)}>{user.name}</p>)}
+              </Dropdown>
+            )}
+          </div>
+
+
+          {/* ----------------------------------------- */}
+
+          <div
+            className="board-header-title-more"
+            onClick={(event) => {
+              event.stopPropagation();
+              setShowDropdownTypes(prev => !prev)
+            }}
+          >
+            <div className="cardinfo-box-title">
+              <p  >Task Type</p>
+            </div>
+            {showDropdownTypes && (
+              <Dropdown
+                style="left-drop"
+                class="board-dropdown"
+                onClose={(event) => {
+                  event.stopPropagation();
+                  setShowDropdownTypes(false)
+                }}
+              >
+                {listOfTypes.map(type => <p onClick={() => { updateTaskType(type) }}>{type}</p>)}
+              </Dropdown>
+            )}
+          </div>
+          {/* ----------------------------------------- */}
+
+          {/* ----------------------------------------- */}
+
+          <div
+            className="board-header-title-more"
+            onClick={(event) => {
+              event.stopPropagation();
+              setShowDropdownImportance(prev => !prev)
+            }}
+          >
+            <div className="cardinfo-box-title">
+              <p  >Importance</p>
+            </div>
+            {showDropdownImportance && (
+              <Dropdown
+                style="left-drop"
+                class="board-dropdown"
+                onClose={(event) => {
+                  event.stopPropagation();
+                  setShowDropdownImportance(false)
+                }}
+              >
+                {importanceList.map(n => <p onClick={() => updateImportance(n)}>{n}</p>)}
+              </Dropdown>
+            )}
+
+          </div>
+
+        </div>
+        {/* ----------------------Done------------------- */}
+
+
+
+
+
+        {/* <div className="cardinfo-box">
           <div className="cardinfo-box-title">
             <Tag />
             <p>Labels</p>
@@ -175,14 +324,14 @@ function CardInfo(props) {
               addLabel({ color: selectedColor, text: value })
             }
           />
-        </div>
+        </div> */}
 
         <div className="cardinfo-box">
           <div className="cardinfo-box-title">
             <CheckSquare />
-            <p>Tasks</p>
+            <p>Comments</p>
           </div>
-          <div className="cardinfo-box-progress-bar">
+          {/* <div className="cardinfo-box-progress-bar">
             <div
               className="cardinfo-box-progress"
               style={{
@@ -190,28 +339,36 @@ function CardInfo(props) {
                 backgroundColor: calculatedPercent === 100 ? "limegreen" : "",
               }}
             />
-          </div>
+          </div> */}
+
           <div className="cardinfo-box-task-list">
             {cardValues.tasks?.map((item) => (
               <div key={item.id} className="cardinfo-box-task-checkbox">
-                <input
+                {/* <input
                   type="checkbox"
                   defaultChecked={item.completed}
                   onChange={(event) =>
                     updateTask(item.id, event.target.checked)
                   }
-                />
+                /> */}
                 <p className={item.completed ? "completed" : ""}>{item.text}</p>
                 <Trash onClick={() => removeTask(item.id)} />
               </div>
             ))}
           </div>
           <CustomInput
-            text={"Add a Task"}
-            placeholder="Enter task"
+            text={"Add a Comment"}
+            placeholder="Enter Comment"
             onSubmit={addTask}
           />
         </div>
+
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
       </div>
     </Modal>
   );
