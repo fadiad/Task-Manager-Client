@@ -202,7 +202,7 @@ function Dashboard() {
       </div>
 
       <ChoseNotifications types={['ITEM_ASSIGNED_TO_ME']} typesWays={['EMAIL']} />
-
+      
       <div className="app-boards-container">
         <div className="app-boards">
           {boards.map((item) => (
