@@ -10,10 +10,9 @@ import { colorsList } from "../../utils/utils";
 
 function Card(props) {
 
-  // const [typeColor, setTypeColor] = useState(colorsList);
   const { card, boardId, removeCard, onDragEnd, onDragEnter, updateCard } =
     props;
-  const { id, title, desc, date, tasks, type, assignTo } = card;
+  const { id, title, desc, dueDate, tasks, type: itemType, assignTo } = card;
   const [showDropdown, setShowDropdown] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -40,7 +39,7 @@ function Card(props) {
         <div className="card-top">
 
           <div className="card-top-labels">
-            <span style={{ "background-color": colorsList[type], borderRadius: "5px", padding: "5px" }}>{type}</span>
+            <span style={{ "background-color": colorsList[itemType], borderRadius: "5px", padding: "5px" }}>{itemType}</span>
           </div>
 
           <div
@@ -67,16 +66,12 @@ function Card(props) {
         <div className="card-title">{title}</div>
         <div>
 
-          {/* <p title={desc}>
-            <AlignLeft />
-          </p> */}
-
         </div>
         <div className="card-footer">
-          {date && (
+          {dueDate && (
             <p className="card-footer-item">
               <Clock className="card-footer-icon" />
-              {formatDate(date)}
+              {formatDate(dueDate)}
             </p>
           )}
 
@@ -84,7 +79,7 @@ function Card(props) {
           {card.assignTo ?
             <p className="importance-p user">
               <User size={12} color="black" />
-              <span className="importance-txt"> {card.assignTo.name.charAt(0)}</span>
+              <span className="importance-txt"> {card.assignTo.username != null ? card.assignTo.username.charAt(0) : null}</span>
             </p> : null
           }
           {card.importance ?

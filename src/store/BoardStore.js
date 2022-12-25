@@ -1,18 +1,26 @@
 
 import { observable, action, makeAutoObservable } from 'mobx'
+import axios from '../api/axios'
 
 export class BoardStore {
 
     constructor() {
         this.listOfStatuses = []
+        this.clickedBoardId = 0
 
         makeAutoObservable(this, {
             listOfStatuses: observable,
+            clickedBoard: observable,
             getStatusesList: action,
             addCard: action,
             addStatus: action,
             passItem: action,
         })
+    }
+
+    setClickedBoard = (clickedBoardId) => {
+        this.clickedBoardId = clickedBoardId
+        console.log(this.clickedBoardId);
     }
 
     getStatusesList = () => {
@@ -70,16 +78,7 @@ export class BoardStore {
 
 
     passItem = (source, destination) => {
-        // const newList = [...this.listOfStatuses]
-
-        // const sourceSection = newList.find(s => {
-        //     return s.id === parseInt(source.droppableId)
-        // })
-
-        // const destinationSection = newList.find(s => s.id === parseInt(destination.droppableId))
-
-        // destinationSection.cards.push({ id: parseInt(source.droppableId), text })
-        // this.listOfStatuses = newList;
+   
     }
 
     createBoard = async (title, types) => {

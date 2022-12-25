@@ -22,15 +22,18 @@ import InputLabel from "@mui/material/InputLabel";
 import { observer, inject } from "mobx-react";
 import "./user.css";
 import axios from "../../api/axios";
-const CREATE_BOARD = "/user/board-create";
+
+const CREATE_BOARD = "/board/board-create";
 
 function CreatNewBoard(props) {
+
   const [chosedTypeList, setChosedTypeList] = useState({
     TASK: false,
     BUG: false,
     TESTING: false,
     SUBTASK: false,
   });
+  
   const [title, setTitle] = useState("");
   const [titleError, setTitleError] = useState(false);
 
@@ -64,7 +67,7 @@ function CreatNewBoard(props) {
     if (title.trim() !== "") {
       const checkedTypes = itemsTypes.filter((item) => chosedTypeList[item]);
       try {
-        const res = await axios.post(CREATE_BOARD, {
+        const res = await axios.post("http://localhost:8080/board/board-create?userId=1", {
           title,
           itemTypes: checkedTypes,
         });

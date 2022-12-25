@@ -3,7 +3,7 @@ import { Calendar, CheckSquare, List, Tag, Trash, Type } from "react-feather";
 import { colorsList } from "../../../utils/utils";
 import Modal from "../../Modal/Modal";
 import { ChevronDown, ChevronUp } from "react-feather";
-
+import Button from "@mui/material/Button";
 import CustomInput from "../../CustomInput/CustomInput";
 
 import "./CardInfo.css";
@@ -20,26 +20,21 @@ function CardInfo(props) {
   const [listOfUsers, setListOfUsers] = useState([
     {
       id: 1,
-      name: 'Khaled Wany'
+      username: 'Khaled Wany'
     },
     {
       id: 2,
-      name: 'Fadi Id'
+      username: 'Fadi Id'
     },
     {
       id: 3,
-      name: 'Saray Shlomi'
+      username: 'Saray Shlomi'
     }
   ])
 
-
-
   const [listOfTypes, setlistOfTypes] = useState(['TASK', 'SUBTASK', 'BUG', 'TESTING'])
 
-
-
   const [importanceList, setImportanceList] = useState([1, 2, 3, 4, 5])
-  /**/
 
   const { onClose, card, boardId, updateCard } = props;
   const [selectedColor, setSelectedColor] = useState("");
@@ -123,19 +118,15 @@ function CardInfo(props) {
     return (completed / cardValues.tasks?.length) * 100;
   };
 
-  const updateDate = (date) => {
-    if (!date) return;
+  const updateDate = (dueDate) => {
+    if (!dueDate) return;
 
     setCardValues({
       ...cardValues,
-      date,
+      dueDate,
     });
   };
 
-  useEffect(() => {
-    if (updateCard) updateCard(boardId, cardValues.id, cardValues);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardValues]);
 
   const calculatedPercent = calculatePercent();
 
@@ -152,6 +143,11 @@ function CardInfo(props) {
   const updateAssignTo = (value) => {
     setCardValues({ ...cardValues, assignTo: value });
   };
+
+
+  const updateCardDetails = () => {
+    updateCard(boardId, cardValues.id, cardValues);
+  }
 
   return (
     <Modal onClose={onClose}>
@@ -173,15 +169,14 @@ function CardInfo(props) {
             />
           </div>
 
-
           <div className="cardinfo-box">
             <div className="cardinfo-box-title">
               <Calendar />
-              <p>Date</p>
+              <p>Due Date</p>
             </div>
             <input
               type="date"
-              defaultValue={cardValues.date}
+              defaultValue={cardValues.dueDate}
               min={new Date().toISOString().substr(0, 10)}
               onChange={(event) => updateDate(event.target.value)}
             />
@@ -202,13 +197,7 @@ function CardInfo(props) {
           />
         </div>
 
-
-
-        {/* @@@@@@@@@@@@ */}
-
         <div className="flex-container">
-
-          {/* <div className="cardinfo-box"> */}
 
           <div
             className="board-header-title-more"
@@ -230,13 +219,10 @@ function CardInfo(props) {
                   setShowDropdownUsers(false)
                 }}
               >
-                {listOfUsers.map(user => <p onClick={() => updateAssignTo(user)}>{user.name}</p>)}
+                {listOfUsers.map(user => <p onClick={() => updateAssignTo(user)}>{user.username}</p>)}
               </Dropdown>
             )}
           </div>
-
-
-          {/* ----------------------------------------- */}
 
           <div
             className="board-header-title-more"
@@ -261,9 +247,6 @@ function CardInfo(props) {
               </Dropdown>
             )}
           </div>
-          {/* ----------------------------------------- */}
-
-          {/* ----------------------------------------- */}
 
           <div
             className="board-header-title-more"
@@ -291,66 +274,17 @@ function CardInfo(props) {
           </div>
 
         </div>
-        {/* ----------------------Done------------------- */}
-
-
-
-
-
-        {/* <div className="cardinfo-box">
-          <div className="cardinfo-box-title">
-            <Tag />
-            <p>Labels</p>
-          </div>
-          <div className="cardinfo-box-labels">
-            {cardValues.labels?.map((item, index) => (
-              <Chip key={index} item={item} removeLabel={removeLabel} />
-            ))}
-          </div>
-          <ul>
-            {colorsList.map((item, index) => (
-              <li
-                key={index}
-                style={{ backgroundColor: item }}
-                className={selectedColor === item ? "li-active" : ""}
-                onClick={() => setSelectedColor(item)}
-              />
-            ))}
-          </ul>
-          <CustomInput
-            text="Add Label"
-            placeholder="Enter label text"
-            onSubmit={(value) =>
-              addLabel({ color: selectedColor, text: value })
-            }
-          />
-        </div> */}
 
         <div className="cardinfo-box">
           <div className="cardinfo-box-title">
             <CheckSquare />
             <p>Comments</p>
           </div>
-          {/* <div className="cardinfo-box-progress-bar">
-            <div
-              className="cardinfo-box-progress"
-              style={{
-                width: `${calculatedPercent}%`,
-                backgroundColor: calculatedPercent === 100 ? "limegreen" : "",
-              }}
-            />
-          </div> */}
+
 
           <div className="cardinfo-box-task-list">
             {cardValues.tasks?.map((item) => (
               <div key={item.id} className="cardinfo-box-task-checkbox">
-                {/* <input
-                  type="checkbox"
-                  defaultChecked={item.completed}
-                  onChange={(event) =>
-                    updateTask(item.id, event.target.checked)
-                  }
-                /> */}
                 <p className={item.completed ? "completed" : ""}>{item.text}</p>
                 <Trash onClick={() => removeTask(item.id)} />
               </div>
@@ -363,12 +297,13 @@ function CardInfo(props) {
           />
         </div>
 
+        <Button onClick={() => updateCardDetails()}>Update</Button>
+        <Button onClick={onClose}>Cancle</Button>
+
         <div></div>
         <div></div>
         <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+
       </div>
     </Modal>
   );
