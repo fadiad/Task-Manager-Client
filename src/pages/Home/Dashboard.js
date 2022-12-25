@@ -60,13 +60,36 @@ function Dashboard(props) {
       });
   };
 
-  const removeBoard = (boardId) => {
-    const boardIndex = stauses.findIndex((item) => item.id === boardId);
-    if (boardIndex < 0) return;
+  const removeBoard = (nameT, boardId) => {
+    console.log(nameT, boardId);
 
-    const tempBoardsList = [...stauses];
-    tempBoardsList.splice(boardIndex, 1);
-    setStatuses(tempBoardsList);
+    let status = {
+      id: boardId,
+      name: nameT
+    }
+
+    const response = axios.put('/board/delete-statues/4', status)
+      .then(function (response) {
+        if (response.status >= 200 && response.status <= 400) {
+          const boardIndex = stauses.findIndex((item) => item.id === boardId);
+          if (boardIndex < 0) return;
+
+          const tempBoardsList = [...stauses];
+          tempBoardsList.splice(boardIndex, 1);
+          setStatuses(tempBoardsList);
+        } else {
+          console.log("fail to delete");
+        }
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+
+
+
+
   };
 
   const addCardHandler = async (boardId, title) => {
@@ -103,23 +126,36 @@ function Dashboard(props) {
 
   };
 
-  const removeCard = (boardId, cardId) => {
-    const boardIndex = stauses.findIndex((item) => item.id === boardId);
-    if (boardIndex < 0) return;
+  const removeCard = async (boardId, cardId) => {
 
-    const tempBoardsList = [...stauses];
-    const cards = tempBoardsList[boardIndex].cards;
+    const response = await axios.delete(`/item/item-delete/${cardId}`,)
+      .then(function (response) {
+        if (response.status >= 200 && response.status <= 400) {
+          const boardIndex = stauses.findIndex((item) => item.id === boardId);
+          if (boardIndex < 0) return;
 
-    const cardIndex = cards.findIndex((item) => item.id === cardId);
-    if (cardIndex < 0) return;
+          const tempBoardsList = [...stauses];
+          const cards = tempBoardsList[boardIndex].cards;
 
-    cards.splice(cardIndex, 1);
-    setStatuses(tempBoardsList);
+          const cardIndex = cards.findIndex((item) => item.id === cardId);
+          if (cardIndex < 0) return;
+
+          cards.splice(cardIndex, 1);
+          setStatuses(tempBoardsList);
+        } else {
+          console.log("fail to delete");
+        }
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
   };
 
   const updateCard = async (boardId, cardId, card) => {
 
-    const response = await axios.put(`/item/item-update/30`, card).then(function (response) {
+    const response = await axios.put(`/item/item-update/${cardId}`, card).then(function (response) {
       if (response.status >= 200 && response.status <= 400) {
         console.log(card);
 
@@ -213,7 +249,7 @@ function Dashboard(props) {
               key={item.id}
               board={item}
               addCard={addCardHandler}
-              removeBoard={() => removeBoard(item.id)}
+              removeBoard={() => removeBoard(item.name, item.id)}
               removeCard={removeCard}
               onDragEnd={onDragEnd}
               onDragEnter={onDragEnter}

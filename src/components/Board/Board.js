@@ -24,9 +24,9 @@ function Board(props) {
   const [showDropdown, setShowDropdown] = useState(false);
 
   return (
-    
+
     <div className="board">
-     
+
       <div className="board-inner" key={board?.id}>
         <div className="board-header">
 
@@ -51,7 +51,7 @@ function Board(props) {
                   setShowDropdown(false)
                 }}
               >
-                <p onClick={() => removeBoard(board?.id)}>Delete Board</p>
+                <p onClick={() => removeBoard(board?.name, board?.id)}>Delete Board</p>
               </Dropdown>
             )}
           </div>
