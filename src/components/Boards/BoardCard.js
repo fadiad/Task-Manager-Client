@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from 'react'
 
 import { observer, inject } from 'mobx-react'
+import axios from '../../api/axios';
 
 const BoardCard = (props) => {
 
     const showCardDetails = () => {
-        console.log(props.board.id);
+        props.boardStore.setClickedBoard(props.board.id);
     }
 
     return (

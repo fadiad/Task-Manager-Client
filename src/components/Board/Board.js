@@ -31,7 +31,7 @@ function Board(props) {
         <div className="board-header">
 
           <p className="board-header-title">
-            {board?.title}
+            {board?.name}
             <span>{board?.cards?.length || 0}</span>
           </p>
 
@@ -77,9 +77,6 @@ function Board(props) {
           />
         </div>
       </div>
-
-
-
     </div>
 
   );

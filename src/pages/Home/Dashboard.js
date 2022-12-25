@@ -2,171 +2,174 @@ import { useEffect, useState } from "react";
 import Board from "../../components/Board/Board";
 import "./Dashboard.css";
 import CustomInput from "../../components/CustomInput/CustomInput";
+import { observer, inject } from 'mobx-react'
 
 import axios from '../../api/axios'
 import ChoseNotifications from "./ChoseNotifications";
 
-function Dashboard() {
-  const [boards, setBoards] = useState([
-    {
-      id: 1,
-      title: "Discover",
-      cards: [
-        {
-          id: 2,
-          title: "Task1",
-          type: "BUG",
-          date: "2022-05-05",
-          importance: 1,
-          assignTo: { id: 1, name: "Fadi Id" },
-          tasks: [
-            { id: 1651319625559.8025, completed: true, text: "Task1_subtask1" },
-            { id: 1651319629650.8945, completed: true, text: "Task1_subtask2" },
-            { id: 1651319633774.9905, completed: true, text: "Task1_subtask3" },
-          ],
-          desc: "Task1 Detail Description",
-        },
-        {
-          id: 3,
-          title: "Task2",
-          assignTo: { id: 1, name: "khaled wany" },
-          importance: 3,
-          type: "TESTING",
-          date: "2022-05-01",
-          tasks: [],
-        },
-      ],
-    }, {
-      id: 6,
-      title: "Discover",
-      cards: [
-        {
-          id: 6,
-          title: "Task1",
-          type: "BUG",
-          date: "2022-05-05",
-          importance: 1,
-          assignTo: { id: 112, name: "Fadi Id" },
-          tasks: [
-            { id: 1651319625559.8025, completed: true, text: "Task1_subtask1" },
-            { id: 1651319629650.8945, completed: true, text: "Task1_subtask2" },
-            { id: 1651319633774.9905, completed: true, text: "Task1_subtask3" },
-          ],
-          desc: "Task1 Detail Description",
-        },
-        {
-          id: 83,
-          title: "Task2",
-          assignTo: { id: 24, name: "khaled wany" },
-          importance: 3,
-          type: "TESTING",
-          date: "2022-05-01",
-          tasks: [],
-        },
-      ],
-    },
-  ]);
+function Dashboard(props) {
 
-  useEffect(() => { }, []);
+  const [stauses, setStatuses] = useState([]);
+
+  useEffect(() => {
+
+    const getBoardDetails = async () => { //props.boardStore.clickedBoardId
+      let myList = []
+
+      const response = await axios('/board/4');
+
+      response.data.board.statues.forEach(status => myList.push(status));
+      myList.forEach(status => status['cards'] = response.data.itemFilteredByStatus[status.id]);
+
+      console.log("response : ", response);
+      console.log("myList : ", myList);
+      setStatuses([...myList]);
+    }
+
+    // if (props.boardStore.clickedBoardId != 0) {
+    getBoardDetails();
+    //}
+
+  }, []);
 
   const [targetCard, setTargetCard] = useState({
     boardId: 0,
     cardId: 0,
   });
 
-  const addboardHandler = (name) => {
-    const tempBoardsList = [...boards];
-    tempBoardsList.push({
-      id: Date.now() + Math.random() * 2,
-      title: name,
-      cards: [],
-    });
-    setBoards(tempBoardsList);
+  const addboardHandler = async (name) => {
+
+    const response = await axios.post('/board/add-statues/4', {
+      name: name
+    }).then(function (response) {
+      if (response.status >= 200 && response.status <= 400) {
+        const tempBoardsList = [...stauses];
+        tempBoardsList.push({
+          id: Date.now() + Math.random() * 2,
+          name: name,
+          cards: [],
+        });
+
+        setStatuses(tempBoardsList);
+      } else {
+        console.log("fail to add");
+      }
+    })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   const removeBoard = (boardId) => {
-    const boardIndex = boards.findIndex((item) => item.id === boardId);
+    const boardIndex = stauses.findIndex((item) => item.id === boardId);
     if (boardIndex < 0) return;
 
-    const tempBoardsList = [...boards];
+    const tempBoardsList = [...stauses];
     tempBoardsList.splice(boardIndex, 1);
-    setBoards(tempBoardsList);
+    setStatuses(tempBoardsList);
   };
 
   const addCardHandler = async (boardId, title) => {
 
-    // let res = await axios.post('/item/item-creat', {
-    //   Title: title,
-    //   boardId: boardId
-    // });
+    const response = await axios.post('/item/item-create', {
+      "title": title,
+      boardId: 4,
+      statusId: boardId,
+      creator: { "id": 1 }
+    }).then(function (response) {
+      if (response.status >= 200 && response.status <= 400) {
+        const boardIndex = stauses.findIndex((item) => item.id === boardId);
+        if (boardIndex < 0) return;
 
-    const boardIndex = boards.findIndex((item) => item.id === boardId);
-    if (boardIndex < 0) return;
+        const tempBoardsList = [...stauses];
+        tempBoardsList[boardIndex].cards.push({
+          id: Date.now() + Math.random() * 2,
+          title,
+          itemType: "",
+          dueDate: "",
+          tasks: [],
+          desc: "",
+        });
+        setStatuses(tempBoardsList);
+      } else {
+        console.log("fail to add");
+      }
 
-    const tempBoardsList = [...boards];
-    tempBoardsList[boardIndex].cards.push({
-      id: Date.now() + Math.random() * 2,
-      title,
-      type: "",
-      date: "",
-      tasks: [],
-      desc: "",
-    });
-    setBoards(tempBoardsList);
+    })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+
   };
 
   const removeCard = (boardId, cardId) => {
-    const boardIndex = boards.findIndex((item) => item.id === boardId);
+    const boardIndex = stauses.findIndex((item) => item.id === boardId);
     if (boardIndex < 0) return;
 
-    const tempBoardsList = [...boards];
+    const tempBoardsList = [...stauses];
     const cards = tempBoardsList[boardIndex].cards;
 
     const cardIndex = cards.findIndex((item) => item.id === cardId);
     if (cardIndex < 0) return;
 
     cards.splice(cardIndex, 1);
-    setBoards(tempBoardsList);
+    setStatuses(tempBoardsList);
   };
 
-  const updateCard = (boardId, cardId, card) => {
-    console.log("shit");
-    const boardIndex = boards.findIndex((item) => item.id === boardId);
-    if (boardIndex < 0) return;
+  const updateCard = async (boardId, cardId, card) => {
 
-    const tempBoardsList = [...boards];
-    const cards = tempBoardsList[boardIndex].cards;
+    const response = await axios.put(`/item/item-update/30`, card).then(function (response) {
+      if (response.status >= 200 && response.status <= 400) {
+        console.log(card);
 
-    const cardIndex = cards.findIndex((item) => item.id === cardId);
-    if (cardIndex < 0) return;
+        const boardIndex = stauses.findIndex((item) => item.id === boardId);
+        if (boardIndex < 0) return;
 
-    tempBoardsList[boardIndex].cards[cardIndex] = card;
+        const tempBoardsList = [...stauses];
+        const cards = tempBoardsList[boardIndex].cards;
 
-    setBoards(tempBoardsList);
+        const cardIndex = cards.findIndex((item) => item.id === cardId);
+        if (cardIndex < 0) return;
+
+        tempBoardsList[boardIndex].cards[cardIndex] = card;
+
+        setStatuses(tempBoardsList);
+      } else {
+        console.log("fail to add");
+      }
+    })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+
+
+
   };
 
   const onDragEnd = (boardId, cardId) => {
-    const sourceBoardIndex = boards.findIndex(
+    const sourceBoardIndex = stauses.findIndex(
       (item) => item.id === boardId
     );
     if (sourceBoardIndex < 0) return;
 
-    const sourceCardIndex = boards[sourceBoardIndex]?.cards?.findIndex(
+    const sourceCardIndex = stauses[sourceBoardIndex]?.cards?.findIndex(
       (item) => item.id === cardId
     );
     if (sourceCardIndex < 0) return;
 
-    const targetBoardIndex = boards.findIndex(
+    const targetBoardIndex = stauses.findIndex(
       (item) => item.id === targetCard.boardId
     );
     if (targetBoardIndex < 0) return;
 
-    const targetCardIndex = boards[targetBoardIndex]?.cards?.findIndex(
+    const targetCardIndex = stauses[targetBoardIndex]?.cards?.findIndex(
       (item) => item.id === targetCard.cardId
     );
     if (targetCardIndex < 0) return;
 
-    const tempBoardsList = [...boards];
+    const tempBoardsList = [...stauses];
     const sourceCard = tempBoardsList[sourceBoardIndex].cards[sourceCardIndex];
     tempBoardsList[sourceBoardIndex].cards.splice(sourceCardIndex, 1);
     tempBoardsList[targetBoardIndex].cards.splice(
@@ -174,7 +177,7 @@ function Dashboard() {
       0,
       sourceCard
     );
-    setBoards(tempBoardsList);
+    setStatuses(tempBoardsList);
 
     setTargetCard({
       boardId: 0,
@@ -202,10 +205,10 @@ function Dashboard() {
       </div>
 
       <ChoseNotifications types={['ITEM_ASSIGNED_TO_ME']} typesWays={['EMAIL']} />
-      
+
       <div className="app-boards-container">
         <div className="app-boards">
-          {boards.map((item) => (
+          {stauses.map((item) => (
             <Board
               key={item.id}
               board={item}
@@ -222,8 +225,8 @@ function Dashboard() {
               displayClass="app-boards-add-board"
               editClass="app-boards-add-board-edit"
               placeholder="Enter Board Name"
-              text="Add Board"
-              buttonText="Add Board"
+              text="Add Status"
+              buttonText="Add Status"
               onSubmit={addboardHandler}
             />
           </div>
@@ -233,4 +236,6 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+
+export default inject("boardStore")(observer(Dashboard))
+
