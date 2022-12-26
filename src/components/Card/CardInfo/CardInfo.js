@@ -10,33 +10,23 @@ import "./CardInfo.css";
 import Chip from "../../Common/Chip";
 import Dropdown from "../../Dropdown/Dropdown";
 
+import axios from "../../../api/axios";
+
+
 function CardInfo(props) {
 
-  /* */
+  const { onClose, card, boardId, updateCard, itemTypes, useresOnBoard } = props;
+
   const [showDropdownUsers, setShowDropdownUsers] = useState(false);
   const [showDropdownTypes, setShowDropdownTypes] = useState(false);
   const [showDropdownImportance, setShowDropdownImportance] = useState(false);
 
-  const [listOfUsers, setListOfUsers] = useState([
-    {
-      id: 1,
-      username: 'Khaled Wany'
-    },
-    {
-      id: 2,
-      username: 'Fadi Id'
-    },
-    {
-      id: 3,
-      username: 'Saray Shlomi'
-    }
-  ])
+  const [listOfUsers, setListOfUsers] = useState([...useresOnBoard])
 
-  const [listOfTypes, setlistOfTypes] = useState(['TASK', 'SUBTASK', 'BUG', 'TESTING'])
+  const [listOfTypes, setlistOfTypes] = useState([...itemTypes])
 
   const [importanceList, setImportanceList] = useState([1, 2, 3, 4, 5])
 
-  const { onClose, card, boardId, updateCard } = props;
   const [selectedColor, setSelectedColor] = useState("");
   const [cardValues, setCardValues] = useState({
     ...card,
@@ -136,16 +126,29 @@ function CardInfo(props) {
   };
 
   const updateTaskType = (value) => {
-    setCardValues({ ...cardValues, type: value });
+    setCardValues({ ...cardValues, itemType: value });
   };
 
 
-  const updateAssignTo = (value) => {
-    setCardValues({ ...cardValues, assignTo: value });
+  const updateAssignTo = async (userId, itemId, name) => {// item-assignTO/{boardId}
+
+    const response = await axios.put(`/item/item-assignTO/4?itemId=${card.id}&userId=${userId}`,).then(function (response) {
+      if (response.status >= 200 && response.status <= 400) {
+        setCardValues({ ...cardValues, assignTo: { id: userId, username: name } });
+        // updateCardDetails();
+      } else {
+        console.log("fail to add");
+      }
+    })
+      .catch(function (error) {
+        console.log(error);
+      });
+
   };
 
 
   const updateCardDetails = () => {
+    console.log(cardValues.id, cardValues);
     updateCard(boardId, cardValues.id, cardValues);
   }
 
@@ -154,6 +157,7 @@ function CardInfo(props) {
 
       <div className="cardinfo">
 
+        {/* <div className="drop"> */}
         <div className="flex-container">
           <div className="cardinfo-box">
 
@@ -199,6 +203,7 @@ function CardInfo(props) {
 
         <div className="flex-container">
 
+
           <div
             className="board-header-title-more"
             onClick={(event) => {
@@ -219,7 +224,7 @@ function CardInfo(props) {
                   setShowDropdownUsers(false)
                 }}
               >
-                {listOfUsers.map(user => <p onClick={() => updateAssignTo(user)}>{user.username}</p>)}
+                {listOfUsers.map(user => <p onClick={() => updateAssignTo(user.id, card.id, user.username)}>{user.username}</p>)}
               </Dropdown>
             )}
           </div>
@@ -232,7 +237,7 @@ function CardInfo(props) {
             }}
           >
             <div className="cardinfo-box-title">
-              <p  >Task Type</p>
+              <p>Task Type</p>
             </div>
             {showDropdownTypes && (
               <Dropdown
@@ -297,14 +302,29 @@ function CardInfo(props) {
           />
         </div>
 
-        <Button onClick={() => updateCardDetails()}>Update</Button>
-        <Button onClick={onClose}>Cancle</Button>
-
-        <div></div>
-        <div></div>
-        <div></div>
+        <div style={{ "text-align": "center" }}>
+          <Button onClick={() => updateCardDetails()}>Update</Button>
+          <Button onClick={onClose}>Cancle</Button>
+        </div>
 
       </div>
+
+
+      {/* 
+      <div className="drop">
+
+
+
+        <div style={{ "text-align": "center", "margin-top": "20px" }}>
+          <Button onClick={() => updateCardDetails()}>Update</Button>
+          <Button onClick={onClose}>Cancle</Button>
+        </div>
+
+      </div> */}
+
+
+
+      {/* </div> */}
     </Modal>
   );
 }

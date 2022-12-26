@@ -106,7 +106,8 @@ function ChoseNotifications(props) {
     <div className="creactNewBoard">
 
       <span variant="outlined" onClick={handleClickOpen}>
-        <Settings size={30} color="white" />
+        {/* <Settings size={30} color="white" /> */}
+        Notifications
       </span>
 
       <Dialog

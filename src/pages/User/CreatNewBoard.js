@@ -33,7 +33,7 @@ function CreatNewBoard(props) {
     TESTING: false,
     SUBTASK: false,
   });
-  
+
   const [title, setTitle] = useState("");
   const [titleError, setTitleError] = useState(false);
 
@@ -101,9 +101,10 @@ function CreatNewBoard(props) {
 
   return (
     <div className="creactNewBoard">
-      <Button variant="outlined" onClick={handleClickOpen}>
-        {`${props.text} Board`}
-      </Button>
+      {/* <Button variant="outlined" onClick={handleClickOpen}> */}
+      <span onClick={handleClickOpen}>{`${props.text} Board`}</span>
+
+      {/* </Button> */}
 
       <Dialog
         fullScreen={fullScreen}

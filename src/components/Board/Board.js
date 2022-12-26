@@ -8,7 +8,7 @@ import CustomInput from "../CustomInput/CustomInput";
 // import ChoseNotifications from "./ChoseNotifications";
 
 import "./Board.css";
-import ChoseNotifications from "../../pages/Home/ChoseNotifications";
+import ChoseNotifications from "../../pages/Home/ChoseItemTypes";
 
 function Board(props) {
   const {
@@ -19,6 +19,8 @@ function Board(props) {
     onDragEnd,
     onDragEnter,
     updateCard,
+    itemTypes,
+    useresOnBoard,
   } = props;
 
   const [showDropdown, setShowDropdown] = useState(false);
@@ -66,6 +68,8 @@ function Board(props) {
               onDragEnter={onDragEnter}
               onDragEnd={onDragEnd}
               updateCard={updateCard}
+              itemTypes={itemTypes}
+              useresOnBoard={useresOnBoard}
             />
           ))}
           <CustomInput
