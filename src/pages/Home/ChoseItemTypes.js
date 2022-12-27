@@ -82,6 +82,7 @@ function ChoseItemTypes(props) {
                   setShowDropdownTypes(false)
                 }}
               >
+                
                 {listOfTypes.map(type => <p>{type}</p>)}
               </Dropdown>
             )}
