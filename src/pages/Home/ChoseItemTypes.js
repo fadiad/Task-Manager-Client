@@ -11,7 +11,7 @@ import InputLabel from "@mui/material/InputLabel";
 //--------------------
 import { observer, inject } from "mobx-react";
 
-import { Scissors } from "react-feather";
+import { Bell } from "react-feather";
 
 import axios from "../../api/axios";
 import Dropdown from "../../components/Dropdown/Dropdown";
@@ -41,7 +41,7 @@ function ChoseItemTypes(props) {
     <div className="creactNewBoard">
 
       <span variant="outlined" onClick={handleClickOpen}>
-        <Scissors size={30} color="white" />
+        <Bell size={30} color="white" />
       </span>
 
       <Dialog
@@ -70,9 +70,9 @@ function ChoseItemTypes(props) {
               setShowDropdownTypes(prev => !prev)
             }}
           >
-            <div className="cardinfo-box-title">
+            {/* <div className="cardinfo-box-title">
               <p>chose task types</p>
-            </div>
+            </div> */}
             {showDropdownTypes && (
               <Dropdown
                 style="left-drop"

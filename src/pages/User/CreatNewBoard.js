@@ -67,7 +67,7 @@ function CreatNewBoard(props) {
     if (title.trim() !== "") {
       const checkedTypes = itemsTypes.filter((item) => chosedTypeList[item]);
       try {
-        const res = await axios.post("http://localhost:8080/board/board-create?userId=1", {
+        const res = await axios.post("/board/board-create?userId=1", {
           title,
           itemTypes: checkedTypes,
         });

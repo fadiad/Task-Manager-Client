@@ -132,7 +132,7 @@ function CardInfo(props) {
 
   const updateAssignTo = async (userId, itemId, name) => {// item-assignTO/{boardId}
 
-    const response = await axios.put(`/item/item-assignTO/4?itemId=${card.id}&userId=${userId}`,).then(function (response) {
+    const response = await axios.put(`/item/item-assignTO?boardId=4&itemId=${card.id}&userId=${userId}`,).then(function (response) {
       if (response.status >= 200 && response.status <= 400) {
         setCardValues({ ...cardValues, assignTo: { id: userId, username: name } });
         // updateCardDetails();

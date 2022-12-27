@@ -12,7 +12,7 @@ const Boards = (props) => {
     useEffect(async () => {
         
         try {
-            let res = await axios.get(`http://localhost:8080/board/get-boards-by-userId?userId=1`);
+            let res = await axios.get(`/user/get-boards-by-userId?userId=1`);
             setBoards(res.data);
         } catch (error) {
             console.log("ASd");

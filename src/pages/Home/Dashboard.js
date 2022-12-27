@@ -17,7 +17,7 @@ function Dashboard(props) {
 
     const getBoardDetails = async () => { //props.boardStore.clickedBoardId
 
-      const response = await axios('/board/4');
+      const response = await axios('/board?boardId=4');
 
       let myList = []
       response.data.board.statues.forEach(status => myList.push(status));
@@ -115,7 +115,7 @@ function Dashboard(props) {
   };
 
   const removeCard = async (boardId, cardId) => {
-    const response = await axios.delete(`/item/item-delete/${cardId}`,)
+    const response = await axios.delete(`/item/item-delete?itemId=${cardId}`,)
       .then(function (response) {
         if (response.status >= 200 && response.status <= 400) {
           const boardIndex = stauses.findIndex((item) => item.id === boardId);
@@ -142,7 +142,7 @@ function Dashboard(props) {
 
   const updateCard = async (boardId, cardId, card) => {
     console.log("card : ", card);
-    const response = await axios.put(`/item/item-update/${cardId}`, card).then(function (response) {
+    const response = await axios.put(`/item/item-update?itemId=${cardId}`, card).then(function (response) {
       if (response.status >= 200 && response.status <= 400) {
         console.log(card);
 
