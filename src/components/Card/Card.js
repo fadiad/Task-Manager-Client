@@ -10,12 +10,12 @@ import { colorsList } from "../../utils/utils";
 
 function Card(props) {
 
-  const { card, boardId, removeCard, onDragEnd, onDragEnter, updateCard } =
+  const { card, boardId, removeCard, onDragEnd, onDragEnter, updateCard, itemTypes ,useresOnBoard  } =
     props;
-  const { id, title, desc, dueDate, tasks, type: itemType, assignTo } = card;
+  const { id, title, desc, dueDate, tasks, itemType, assignTo } = card;
   const [showDropdown, setShowDropdown] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
+  
   return (
     <>
       {showModal && (
@@ -24,6 +24,8 @@ function Card(props) {
           card={card}
           boardId={boardId}
           updateCard={updateCard}
+          itemTypes={itemTypes}
+          useresOnBoard={useresOnBoard}
         />
       )}
 
@@ -39,7 +41,10 @@ function Card(props) {
         <div className="card-top">
 
           <div className="card-top-labels">
-            <span style={{ "background-color": colorsList[itemType], borderRadius: "5px", padding: "5px" }}>{itemType}</span>
+            {itemTypes.find(type => type === itemType) ?
+              <span style={{ "background-color": colorsList[itemType], borderRadius: "5px", padding: "5px" }}>{itemType}</span>
+              : null
+            }
           </div>
 
           <div

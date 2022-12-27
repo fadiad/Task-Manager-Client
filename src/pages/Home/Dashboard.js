@@ -5,25 +5,30 @@ import CustomInput from "../../components/CustomInput/CustomInput";
 import { observer, inject } from 'mobx-react'
 
 import axios from '../../api/axios'
-import ChoseNotifications from "./ChoseNotifications";
+import ChoseNotifications from "./ChoseItemTypes";
 
 function Dashboard(props) {
 
   const [stauses, setStatuses] = useState([]);
+  const [boardData, setBoardData] = useState({});
+  const [useresOnBoard, setUseresOnBoard] = useState([]);
 
   useEffect(() => {
 
     const getBoardDetails = async () => { //props.boardStore.clickedBoardId
-      let myList = []
 
       const response = await axios('/board/4');
 
+      let myList = []
       response.data.board.statues.forEach(status => myList.push(status));
       myList.forEach(status => status['cards'] = response.data.itemFilteredByStatus[status.id]);
+      setStatuses([...myList]);
 
       console.log("response : ", response);
       console.log("myList : ", myList);
-      setStatuses([...myList]);
+
+      setUseresOnBoard([...response.data.usersOnBoard])
+      setBoardData({ ...response.data.board })
     }
 
     // if (props.boardStore.clickedBoardId != 0) {
@@ -38,7 +43,6 @@ function Dashboard(props) {
   });
 
   const addboardHandler = async (name) => {
-
     const response = await axios.post('/board/add-statues/4', {
       name: name
     }).then(function (response) {
@@ -49,7 +53,6 @@ function Dashboard(props) {
           name: name,
           cards: [],
         });
-
         setStatuses(tempBoardsList);
       } else {
         console.log("fail to add");
@@ -80,16 +83,10 @@ function Dashboard(props) {
         } else {
           console.log("fail to delete");
         }
-
       })
       .catch(function (error) {
         console.log(error);
       });
-
-
-
-
-
   };
 
   const addCardHandler = async (boardId, title) => {
@@ -100,34 +97,24 @@ function Dashboard(props) {
       statusId: boardId,
       creator: { "id": 1 }
     }).then(function (response) {
+      console.log(response);
       if (response.status >= 200 && response.status <= 400) {
         const boardIndex = stauses.findIndex((item) => item.id === boardId);
         if (boardIndex < 0) return;
 
         const tempBoardsList = [...stauses];
-        tempBoardsList[boardIndex].cards.push({
-          id: Date.now() + Math.random() * 2,
-          title,
-          itemType: "",
-          dueDate: "",
-          tasks: [],
-          desc: "",
-        });
+        tempBoardsList[boardIndex].cards.push(response.data);
         setStatuses(tempBoardsList);
       } else {
         console.log("fail to add");
       }
-
     })
       .catch(function (error) {
         console.log(error);
       });
-
-
   };
 
   const removeCard = async (boardId, cardId) => {
-
     const response = await axios.delete(`/item/item-delete/${cardId}`,)
       .then(function (response) {
         if (response.status >= 200 && response.status <= 400) {
@@ -154,7 +141,7 @@ function Dashboard(props) {
   };
 
   const updateCard = async (boardId, cardId, card) => {
-
+    console.log("card : ", card);
     const response = await axios.put(`/item/item-update/${cardId}`, card).then(function (response) {
       if (response.status >= 200 && response.status <= 400) {
         console.log(card);
@@ -178,10 +165,6 @@ function Dashboard(props) {
       .catch(function (error) {
         console.log(error);
       });
-
-
-
-
   };
 
   const onDragEnd = (boardId, cardId) => {
@@ -237,7 +220,7 @@ function Dashboard(props) {
   return (
     <div className="app">
       <div className="app-nav">
-        <h1>Trello Board</h1>
+        <h1>{boardData.title}</h1>
       </div>
 
       <ChoseNotifications types={['ITEM_ASSIGNED_TO_ME']} typesWays={['EMAIL']} />
@@ -254,6 +237,8 @@ function Dashboard(props) {
               onDragEnd={onDragEnd}
               onDragEnter={onDragEnter}
               updateCard={updateCard}
+              itemTypes={boardData.itemTypes}
+              useresOnBoard={useresOnBoard}
             />
           ))}
           <div className="app-boards-last">
