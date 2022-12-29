@@ -13,7 +13,6 @@ export class AuthStore {
     });
   }
    
- 
 
   setAuth = (data) => {
     const newData={}
@@ -41,4 +40,9 @@ export class AuthStore {
     }
     this.userData=newUser;
   }
+
+  setListOfBoards=(boards)=>{
+      this.listOfBoards=boards
+  }
+
 }

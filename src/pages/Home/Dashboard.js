@@ -3,8 +3,9 @@ import Board from "../../components/Board/Board";
 import "./Dashboard.css";
 import CustomInput from "../../components/CustomInput/CustomInput";
 import { observer, inject } from "mobx-react";
-import { toJS } from "mobx"
 import axios from "../../api/axios";
+import ChoseItemTypes from "./ChoseItemTypes";
+import { toJS } from "mobx"
 import { useParams } from "react-router-dom";
 import { DragDropContext } from 'react-beautiful-dnd';
 
@@ -116,40 +117,49 @@ function Dashboard(props) {
 
   const removeCard = async (statusId, cardId) => {
     try {
-      await axios.delete(
-        `/item/item-delete?itemId=${cardId}&boardId=${boardId}`,
+      await axios.delete(`/item/item-delete?itemId=${cardId}&boardId=${boardId}`,
         {
           headers: {
             Authorization: "Bearer " + props.authStore.userData.token,
           },
         }
-      );
-      props.boardStore.deleteItemFromStatus(statusId, cardId);
+      )
+      props.boardStore.deleteItemFromStatus(statusId, cardId)
     } catch (error) {
       console.log(error);
     }
+
   };
 
-  const updateCard = async (boardId, cardId, card) => {
+  const updateCard = async (statusId, cardId, card) => {
     console.log("card : ", card);
-    const response = await axios
-      .put(`/item/item-update?itemId=${cardId}`, card)
+
+    axios.put(`/item/item-update?itemId=${cardId}`, card,
+      {
+        headers: {
+          Authorization: "Bearer " + props.authStore.userData.token,
+        }
+      })
       .then(function (response) {
+
         if (response.status >= 200 && response.status <= 400) {
-          console.log(card);
+          let updatedItem = response.data;
+          props.boardStore.updateItem(statusId, cardId, updatedItem)
 
-          const boardIndex = stauses.findIndex((item) => item.id === boardId);
-          if (boardIndex < 0) return;
+          // console.log(card);
 
-          const tempBoardsList = [...stauses];
-          const cards = tempBoardsList[boardIndex].cards;
+          // const boardIndex = stauses.findIndex((item) => item.id === boardId);
+          // if (boardIndex < 0) return;
 
-          const cardIndex = cards.findIndex((item) => item.id === cardId);
-          if (cardIndex < 0) return;
+          // const tempBoardsList = [...stauses];
+          // const cards = tempBoardsList[boardIndex].cards;
 
-          tempBoardsList[boardIndex].cards[cardIndex] = card;
+          // const cardIndex = cards.findIndex((item) => item.id === cardId);
+          // if (cardIndex < 0) return;
 
-          setStatuses(tempBoardsList);
+          // tempBoardsList[boardIndex].cards[cardIndex] = card;
+
+          // setStatuses(tempBoardsList);
         } else {
           console.log("fail to add");
         }
@@ -158,6 +168,9 @@ function Dashboard(props) {
         console.log(error);
       });
   };
+
+
+
 
   // const onDragEnd = (boardId, cardId) => {
   //   console.log(boardId, cardId);
@@ -197,33 +210,33 @@ function Dashboard(props) {
   //   });
   // };
 
-  const onDragEnd = async(result) => {
+  const onDragEnd = async (result) => {
 
-    if (!result.destination){
+    if (!result.destination) {
       return;
     }
-    const URL =`/board/updateItemStatus?itemId=${result.source.index}&boardId=${boardId}`
+    const URL = `/board/updateItemStatus?itemId=${result.source.index}&boardId=${boardId}`
     console.log(result.destination.droppableId);//status id
-    const destinationStatuses=toJS(props.boardStore.board.statues);//status id
+    const destinationStatuses = toJS(props.boardStore.board.statues);//status id
     try {
-      const destinationStatus=destinationStatuses.find(s=>s.id===parseInt(result.destination.droppableId))
+      const destinationStatus = destinationStatuses.find(s => s.id === parseInt(result.destination.droppableId))
       console.log(destinationStatus);
-      if(!destinationStatus){
-         return;
+      if (!destinationStatus) {
+        return;
       }
-       
-      const response = await axios.put(URL,destinationStatus,{
+
+      const response = await axios.put(URL, destinationStatus, {
         headers: {
           Authorization: "Bearer " + props.authStore.userData.token,
         },
       })
       console.log(response.data);
-      props.boardStore.passItem(result.source, result.destination,response.data)
+      props.boardStore.passItem(result.source, result.destination, response.data)
     } catch (error) {
-      
+
     }
 
-}
+  }
 
   const onDragEnter = (boardId, cardId) => {
     console.log(boardId, cardId);
@@ -244,14 +257,16 @@ function Dashboard(props) {
 
   return (
     <div className="app">
+
       <div className="app-nav">
         <h1>{props.boardStore.board.title}</h1>
       </div>
 
-      {/* <ChoseItemTypes boardItemTypes={boardData.itemTypes} /> */}
+      <ChoseItemTypes boardItemTypes={props.boardStore.board.itemTypes} />
 
       <div className="app-boards-container">
         <DragDropContext onDragEnd={onDragEnd}>
+
           <div className="app-boards">
             {props.boardStore.board &&
               props.boardStore.board?.statues.map((item) => (

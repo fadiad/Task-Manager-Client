@@ -126,26 +126,32 @@ function CardInfo(props) {
   };
 
 
-  const updateAssignTo = async (userId, itemId, name) => {// item-assignTO/{boardId}
+  const updateAssignTo = (userId, itemId, name) => {// item-assignTO/{boardId}
+    axios.put(`/item/item-assignTO?boardId=${props.boardStore.board.id}&itemId=${itemId}&userId=${userId}`, {},
+      {
+        headers: {
+          Authorization: "Bearer " + props.authStore.userData.token,
+        },
+      }).then(function (response) {
+        // if (response.status >= 200 && response.status <= 400) {
+        //   setCardValues({ ...cardValues, assignTo: { id: userId, username: name } });
+        //   // updateCardDetails();
+        // } else {
+        //   console.log("fail to add");
+        // }
 
-    const response = await axios.put(`/item/item-assignTO?boardId=4&itemId=${card.id}&userId=${userId}`,).then(function (response) {
-      if (response.status >= 200 && response.status <= 400) {
-        setCardValues({ ...cardValues, assignTo: { id: userId, username: name } });
-        // updateCardDetails();
-      } else {
-        console.log("fail to add");
-      }
-    })
+        // onClose()
+      })
       .catch(function (error) {
         console.log(error);
       });
-
   };
 
 
   const updateCardDetails = () => {
     console.log(cardValues.id, cardValues);
     updateCard(boardId, cardValues.id, cardValues);
+    onClose()
   }
 
 
@@ -155,7 +161,7 @@ function CardInfo(props) {
 
   return (
     <Modal onClose={onClose}>
-
+      {console.log(props.boardStore.usersOnBoard)}
       <div className="cardinfo">
 
         {/* <div className="drop"> */}
@@ -225,7 +231,11 @@ function CardInfo(props) {
                   setShowDropdownUsers(false)
                 }}
               >
-                {props.boardStore.useresOnBoard.map(user => <p key={card.id} onClick={() => updateAssignTo(user.id, card.id, user.username)}>{user.username}</p>)}
+                {
+                  props.boardStore.usersOnBoard != undefined
+                    ? props.boardStore.usersOnBoard.map(user => <p key={card.id} onClick={() => updateAssignTo(user.id, card.id, user.username)}>{user.username}</p>)
+                    : null
+                }
 
               </Dropdown>
             )}
@@ -250,7 +260,7 @@ function CardInfo(props) {
                   setShowDropdownTypes(false)
                 }}
               >
-                {listOfTypes.map(type => <p onClick={() => { updateTaskType(type) }}>{type}</p>)}
+                {props.boardStore.board.itemTypes.map(type => <p onClick={() => { updateTaskType(type) }}>{type}</p>)}
               </Dropdown>
             )}
           </div>
@@ -331,4 +341,4 @@ function CardInfo(props) {
   );
 }
 
-export default inject("boardStore")(observer(CardInfo))
+export default inject("boardStore", "authStore")(observer(CardInfo))

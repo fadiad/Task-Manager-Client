@@ -40,30 +40,50 @@ function ChoseItemTypes(props) {
 
   const addItem = (type) => {
     console.log(type);
-    // let temp = [...itemTypes]
-    // temp.push(type)
-    // setItemTypes(...temp)
+    axios.post(
+      `/board/add-itemType?boardId=${props.boardStore.board.id}`, { type: type }, {
+      headers: {
+        Authorization: "Bearer " + props.authStore.userData.token,
+      },
+    }).then(function (response) {
+      if (response.status >= 200 && response.status < 400) {
+        props.boardStore.addItemType(type);
+      } else {
+        console.log("fail to add");
+      }
+
+    }).catch(function (error) {
+      console.log(error);
+    });
   }
 
   const deleteItem = (type) => {
     console.log(type);
-    // let temp = [...itemTypes]
+    axios.put(
+      `/board/delete-itemType?boardId=${props.boardStore.board.id}`, { type: type }, {
+      headers: {
+        Authorization: "Bearer " + props.authStore.userData.token,
+      },
+    }).then(function (response) {
+      console.log(response.data);
 
-    // const index = temp.indexOf(type);
-    // temp.splice(index, 1);
+      if (response.status >= 200 && response.status < 400) {
+        props.boardStore.deleteItemType(type);
+      } else {
+        console.log("fail to add");
+      }
 
-    // console.log(index);
-    // setItemTypes(...temp)
+    }).catch(function (error) {
+      console.log(error);
+    });
   }
 
-  // props.boardItemTypes.forEach(element => {
-  //   listOfTypes[element] = element
-  // });
+
 
   return (
     <div className="creactNewBoard">
 
-      <span variant="outlined" onClick={handleClickOpen}>
+      <span className="notifications-icon" variant="outlined" onClick={handleClickOpen}>
         <Bell size={30} color="white" />
       </span>
 
@@ -94,16 +114,18 @@ function ChoseItemTypes(props) {
             }}
           >
 
-            {itemTypes.map((type, index) => {
+            {itemsTypes.map((type, index) => {
+
               return (<p className="item-type" key={index}>
                 <span className="item">{type}</span>
+                <span className="item-icon">
+                  {
+                    props.boardStore.board.itemTypes.find((t) => t === type)
 
-                {/* {
-                  listOfTypes[type]
-                    ? <Minus size={"13px"} onClick={() => deleteItem(type)} />
-                    : <Plus size={"13px"} onClick={() => addItem(type)} />
-                } */}
-
+                      ? <Minus size={"13px"} onClick={() => deleteItem(type)} />
+                      : <Plus size={"13px"} onClick={() => addItem(type)} />
+                  }
+                </span>
               </p>)
             })}
 
@@ -122,4 +144,4 @@ function ChoseItemTypes(props) {
   );
 }
 
-export default inject("boardStore")(observer(ChoseItemTypes));
+export default inject("boardStore", "authStore")(observer(ChoseItemTypes));

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MoreHorizontal } from "react-feather";
-import { observer, inject } from "mobx-react";
+import { observer, inject } from 'mobx-react'
 import { Droppable } from "react-beautiful-dnd";
 import Card from "../Card/Card";
 import Dropdown from "../Dropdown/Dropdown";
@@ -38,7 +38,7 @@ function Board(props) {
             <div className="board-header">
               <p className="board-header-title">
                 {board?.name}
-                <span>{board?.cards?.length || 0}</span>
+                {/* <span>{board?.cards?.length || 0}</span> */}
               </p>
 
               <div
@@ -92,4 +92,6 @@ function Board(props) {
     </Droppable>
   );
 }
-export default inject("boardStore")(observer(Board));
+export default inject("boardStore")(observer(Board))
+
+ 
