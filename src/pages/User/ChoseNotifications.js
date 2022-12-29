@@ -27,9 +27,7 @@ import axios from "../../api/axios";
 const CREATE_BOARD = "/user/board-create";
 
 function ChoseNotifications(props) {
-
   const [chosedTypeList, setChosedTypeList] = useState({});
-
 
   const [chosedNotificationsWay, setChosedNotificationsWay] = useState({});
 
@@ -39,23 +37,19 @@ function ChoseNotifications(props) {
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleClickOpen = () => {
-
     const checkedTypes = {};
     const checkedTypesWay = {};
 
     notificationsTypes.forEach((type) => (checkedTypes[type] = false));
+    
+    checkedTypesWay["EMAIL"] =
+      props.authStore.userData.userDTO.emailNotification;
+    checkedTypesWay["POP_UP"] =
+      props.authStore.userData.userDTO.popUpNotification;
 
-    notificationsWay.forEach((type) => (checkedTypesWay[type] = false));
-
-
-    if (props.types !== undefined) {
-      props.types.forEach((type) => (checkedTypes[type] = true));
-    }
-
-    if (props.typesWays !== undefined) {
-      props.typesWays.forEach((type) => (checkedTypesWay[type] = true));
-    }
-
+    props.authStore.userData.userDTO.notificationTypes.forEach(
+      (type) => (checkedTypes[type] = true)
+    );
     setChosedTypeList(checkedTypes);
     setChosedNotificationsWay(checkedTypesWay);
 
@@ -67,20 +61,30 @@ function ChoseNotifications(props) {
   };
 
   const createBoard = async () => {
-
-    const checkedTypes = notificationsTypes.filter((item) => chosedTypeList[item]);
+    const checkedTypes = notificationsTypes.filter(
+      (item) => chosedTypeList[item]
+    );
     const way = notificationsWay.filter((item) => chosedNotificationsWay[item]);
+    try {
+      const response = await axios.post(
+        "/user/notificationSetting",
+        {
+          ways: way,
+          option: checkedTypes,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + props.authStore.userData.token,
+          },
+        }
+      );
+      
+      props.authStore.setUser(response.data);
+      setOpen(false);
 
-    console.log(checkedTypes);
-    console.log(way);
-    // try {
-    //   const res = await axios.post(CREATE_BOARD, {
-    //     itemTypes: checkedTypes,
-    //   });
-    //   setOpen(false);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   //---------List---------
@@ -93,7 +97,6 @@ function ChoseNotifications(props) {
     setChosedTypeList({ ...temp });
   };
 
-
   const handleToggleWay = (value) => () => {
     let temp = { ...chosedNotificationsWay };
     if (temp[value] === true) temp[value] = false;
@@ -104,7 +107,6 @@ function ChoseNotifications(props) {
 
   return (
     <div className="creactNewBoard">
-
       <span variant="outlined" onClick={handleClickOpen}>
         {/* <Settings size={30} color="white" /> */}
         Notifications
@@ -126,10 +128,10 @@ function ChoseNotifications(props) {
         }}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">Notifications Board</DialogTitle>
+        <DialogTitle id="responsive-dialog-title">
+          Notifications Board
+        </DialogTitle>
         <DialogContent>
-
-
           <InputLabel id="demo-simple-select-helper-label">
             Chose Notifications
           </InputLabel>
@@ -169,7 +171,7 @@ function ChoseNotifications(props) {
             </List>
           </div>
 
-          <hr style={{ width: "500px ", "text-align": "center" }} />
+          <hr style={{ width: "500px ", textAlign: "center" }} />
 
           <div className="list">
             <List
@@ -222,4 +224,4 @@ function ChoseNotifications(props) {
   );
 }
 
-export default inject("boardStore")(observer(ChoseNotifications));
+export default inject("boardStore", "authStore")(observer(ChoseNotifications));

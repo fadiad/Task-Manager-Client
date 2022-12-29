@@ -88,3 +88,17 @@ body{
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px rgba(179, 174, 174, 0.5);
 }
+
+.item-type{
+  margin-bottom: 5px;
+  padding: 5px;
+  background-color: rgb(167, 150, 150);
+  width: 40%;
+
+}
+
+.item{
+  margin-right: 120px;
+}
+
+

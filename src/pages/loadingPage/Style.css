@@ -1,0 +1,53 @@
+.container-loading{
+    height: 100vh;
+    background-color: #2a9d8f;
+    align-self: center;
+}
+
+.body{
+    position: absolute;
+    top: 50%;
+    left: 33%; 
+    transform: translate(-50%,-50%);
+}
+.text-loading{
+    font-size: 30px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    position: absolute;
+    top: 43%;
+    left:45%; 
+}
+.progress{
+    position: relative;
+    height: 28px;
+    width: 3220%;
+    border: 10px solid #f4a261;
+    border-radius: 15px;
+}
+.progress .color{
+    position: relative;
+    background-color: #ffffff;
+    left: -1px;
+    top: -1px;
+    width: 0px;
+    height: 10px;
+    border-radius: 15px;
+    animation: progres 4s infinite linear;    
+}
+@keyframes progres{
+    0%{
+      width: 0%;
+    }
+    25%{
+        width: 50%;
+    }
+    50%{
+        width: 75%;
+    }
+    75%{
+        width: 85%;
+    }
+    100%{
+        width: 100%;
+    }
+};
