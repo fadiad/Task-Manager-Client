@@ -3,10 +3,10 @@ import { observer, inject } from "mobx-react";
 import BoardCard from "./BoardCard";
 import "./style.css";
 import axios from "../../api/axios";
-import { Link } from "react-router-dom";
+import { DragDropContext } from "react-beautiful-dnd";
+
 
 const Boards = (props) => {
-  const [boards, setBoards] = useState([]);
 
   useEffect(() => {
     const fetchUserBoards = async () => {
@@ -35,9 +35,7 @@ const Boards = (props) => {
       <div className="boards-grid">
         {props.authStore.listOfBoards.map((board, index) => {
           return (
-            <Link className="link" to={`/board/${board.id}`} key={index}>
-              <BoardCard board={board}  />;
-            </Link>
+            <BoardCard board={board} key={index}/>
           );
         })}
       </div>

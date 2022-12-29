@@ -12,14 +12,33 @@ export class AuthStore {
       setAuth: action,
     });
   }
+   
 
   setAuth = (data) => {
     const newData={}
     const { userDTO, token } = data;
     newData.userDTO=userDTO
     newData.token=token 
-    console.log(newData);
     this.userData=newData
+    
+  }
+
+  setListOfBoards=(boards)=>{
+      this.listOfBoards=boards
+  }
+
+  createBoard = (board) => {
+    const tempBoardList= JSON.parse(JSON.stringify(this.listOfBoards))
+    tempBoardList.push(board);
+    this.listOfBoards=tempBoardList 
+  }; 
+
+  setUser=(user)=>{
+    const newUser={
+      ...this.userData,
+      userDTO:user
+    }
+    this.userData=newUser;
   }
 
   setListOfBoards=(boards)=>{

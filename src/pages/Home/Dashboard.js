@@ -3,10 +3,11 @@ import Board from "../../components/Board/Board";
 import "./Dashboard.css";
 import CustomInput from "../../components/CustomInput/CustomInput";
 import { observer, inject } from "mobx-react";
-
 import axios from "../../api/axios";
 import ChoseItemTypes from "./ChoseItemTypes";
+import { toJS } from "mobx"
 import { useParams } from "react-router-dom";
+import { DragDropContext } from 'react-beautiful-dnd';
 
 function Dashboard(props) {
   const [stauses, setStatuses] = useState([]);
@@ -93,7 +94,7 @@ function Dashboard(props) {
           title: title,
           boardId: boardId,
           statusId: statusId,
-          creator: { id: 1 },
+          creator: { id: props.authStore.userData.userDTO.id },
         },
         {
           headers: {
@@ -168,40 +169,74 @@ function Dashboard(props) {
       });
   };
 
-  const onDragEnd = (boardId, cardId) => {
-    const sourceBoardIndex = stauses.findIndex((item) => item.id === boardId);
-    if (sourceBoardIndex < 0) return;
 
-    const sourceCardIndex = stauses[sourceBoardIndex]?.cards?.findIndex(
-      (item) => item.id === cardId
-    );
-    if (sourceCardIndex < 0) return;
 
-    const targetBoardIndex = stauses.findIndex(
-      (item) => item.id === targetCard.boardId
-    );
-    if (targetBoardIndex < 0) return;
 
-    const targetCardIndex = stauses[targetBoardIndex]?.cards?.findIndex(
-      (item) => item.id === targetCard.cardId
-    );
-    if (targetCardIndex < 0) return;
+  // const onDragEnd = (boardId, cardId) => {
+  //   console.log(boardId, cardId);
+  //   console.log("hiii");
 
-    const tempBoardsList = [...stauses];
-    const sourceCard = tempBoardsList[sourceBoardIndex].cards[sourceCardIndex];
-    tempBoardsList[sourceBoardIndex].cards.splice(sourceCardIndex, 1);
-    tempBoardsList[targetBoardIndex].cards.splice(
-      targetCardIndex,
-      0,
-      sourceCard
-    );
-    setStatuses(tempBoardsList);
+  //   const sourceBoardIndex = stauses.findIndex((item) => item.id === boardId);
+  //   if (sourceBoardIndex < 0) return;
 
-    setTargetCard({
-      boardId: 0,
-      cardId: 0,
-    });
-  };
+  //   const sourceCardIndex = stauses[sourceBoardIndex]?.cards?.findIndex(
+  //     (item) => item.id === cardId
+  //   );
+  //   if (sourceCardIndex < 0) return;
+
+  //   const targetBoardIndex = stauses.findIndex(
+  //     (item) => item.id === targetCard.boardId
+  //   );
+  //   if (targetBoardIndex < 0) return;
+
+  //   const targetCardIndex = stauses[targetBoardIndex]?.cards?.findIndex(
+  //     (item) => item.id === targetCard.cardId
+  //   );
+  //   if (targetCardIndex < 0) return;
+
+  //   const tempBoardsList = [...stauses];
+  //   const sourceCard = tempBoardsList[sourceBoardIndex].cards[sourceCardIndex];
+  //   tempBoardsList[sourceBoardIndex].cards.splice(sourceCardIndex, 1);
+  //   tempBoardsList[targetBoardIndex].cards.splice(
+  //     targetCardIndex,
+  //     0,
+  //     sourceCard
+  //   );
+  //   setStatuses(tempBoardsList);
+
+  //   setTargetCard({
+  //     boardId: 0,
+  //     cardId: 0,
+  //   });
+  // };
+
+  const onDragEnd = async (result) => {
+
+    if (!result.destination) {
+      return;
+    }
+    const URL = `/board/updateItemStatus?itemId=${result.source.index}&boardId=${boardId}`
+    console.log(result.destination.droppableId);//status id
+    const destinationStatuses = toJS(props.boardStore.board.statues);//status id
+    try {
+      const destinationStatus = destinationStatuses.find(s => s.id === parseInt(result.destination.droppableId))
+      console.log(destinationStatus);
+      if (!destinationStatus) {
+        return;
+      }
+
+      const response = await axios.put(URL, destinationStatus, {
+        headers: {
+          Authorization: "Bearer " + props.authStore.userData.token,
+        },
+      })
+      console.log(response.data);
+      props.boardStore.passItem(result.source, result.destination, response.data)
+    } catch (error) {
+
+    }
+
+  }
 
   const onDragEnter = (boardId, cardId) => {
     console.log(boardId, cardId);
@@ -222,39 +257,43 @@ function Dashboard(props) {
 
   return (
     <div className="app">
-      <div className="app-nav">{/* <h1>{boardData.title}</h1> */}</div>
+
+      <div className="app-nav">
+        <h1>{props.boardStore.board.title}</h1>
+      </div>
 
       <ChoseItemTypes boardItemTypes={props.boardStore.board.itemTypes} />
 
       <div className="app-boards-container">
-        <div className="app-boards">
-          {props.boardStore.board &&
-            props.boardStore.board?.statues.map((item) => (
-              <Board
-                key={item.id}
-                status={item}
-                addCard={addCardHandler}
-                removeBoard={() => removeBoard(item.name, item.id)}
-                removeCard={removeCard}
-                onDragEnd={onDragEnd}
-                onDragEnter={onDragEnter}
-                updateCard={updateCard}
-                itemTypes={props.boardStore.board.itemTypes}
-              // useresOnBoard={props.boardStore.usersOnBoard}
-              />
-            ))}
+        <DragDropContext onDragEnd={onDragEnd}>
 
-          <div className="app-boards-last">
-            <CustomInput
-              displayClass="app-boards-add-board"
-              editClass="app-boards-add-board-edit"
-              placeholder="Enter Board Name"
-              text="Add Status"
-              buttonText="Add Status"
-              onSubmit={addboardHandler}
-            />
+          <div className="app-boards">
+            {props.boardStore.board &&
+              props.boardStore.board?.statues.map((item) => (
+                <Board
+                  key={item.id}
+                  status={item}
+                  addCard={addCardHandler}
+                  removeBoard={() => removeBoard(item.name, item.id)}
+                  removeCard={removeCard}
+                  updateCard={updateCard}
+                  itemTypes={props.boardStore.board.itemTypes}
+                  // useresOnBoard={props.boardStore.usersOnBoard}
+                />
+              ))}
+
+            <div className="app-boards-last">
+              <CustomInput
+                displayClass="app-boards-add-board"
+                editClass="app-boards-add-board-edit"
+                placeholder="Enter Board Name"
+                text="Add Status"
+                buttonText="Add Status"
+                onSubmit={addboardHandler}
+              />
+            </div>
           </div>
-        </div>
+        </DragDropContext>
       </div>
     </div>
   );

@@ -23,8 +23,7 @@ const MyCard = ({ card, id, index }) => {
                         </CardContent>
                     </Card>
                 </div>
-            )
-            }
+            )}
         </Draggable>
     )
 }

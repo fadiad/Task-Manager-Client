@@ -3,7 +3,8 @@
     align-items: center;
     justify-content: center;
     box-shadow: rgb(0 0 0 / 9%) 0px 9px 12px, rgb(0 0 0 / 6%) 0px 6px 6px;
-    width: 90%;
+    width: 100%;
+    height:100%;
     text-align: center;
     background-color: #fde3b6;
     color: #cd853f;
@@ -21,6 +22,7 @@
     grid-auto-rows: minmax(90px, auto);
     gap: 15px;
     margin: 50px;
+
 }
 
 .board-pag {

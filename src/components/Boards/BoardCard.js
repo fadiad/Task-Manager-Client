@@ -1,26 +1,14 @@
+import React, { useEffect, useState } from "react";
 
-import React, { useEffect, useState } from 'react'
-
-import { observer, inject } from 'mobx-react'
-import axios from '../../api/axios';
+import { observer, inject } from "mobx-react";
+import { Link } from 'react-router-dom';
 
 const BoardCard = (props) => {
+  return (
+    <Link className="link" to={`/board/${props.board.id}`}>
+      <div className="board-tile">{props.board.title}</div>
+    </Link>
+  );
+};
 
-    const showCardDetails = () => {
-        try {
-            
-        } catch (error) {
-            
-        }
-        props.boardStore.setClickedBoard(props.board.id);
-    }
-
-    return (
-        <div className='board-tile' onClick={() => showCardDetails()}>
-            {props.board.title}
-        </div>
-    )
-}
-
-export default inject("boardStore")(observer(BoardCard))
-
+export default inject("boardStore")(observer(BoardCard));

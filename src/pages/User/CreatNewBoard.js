@@ -67,10 +67,15 @@ function CreatNewBoard(props) {
     if (title.trim() !== "") {
       const checkedTypes = itemsTypes.filter((item) => chosedTypeList[item]);
       try {
-        const res = await axios.post("/board/board-create?userId=1", {
+        const response = await axios.post("/board/board-create", {
           title,
           itemTypes: checkedTypes,
+        },{
+          headers: {
+            Authorization: "Bearer " + props.authStore.userData.token,
+          },
         });
+        props.authStore.createBoard(response.data);
         setOpen(false);
       } catch (error) {
         console.log(error);
@@ -191,4 +196,4 @@ function CreatNewBoard(props) {
   );
 }
 
-export default inject("boardStore")(observer(CreatNewBoard));
+export default inject("boardStore","authStore")(observer(CreatNewBoard));
