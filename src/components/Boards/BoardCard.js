@@ -7,6 +7,11 @@ import axios from '../../api/axios';
 const BoardCard = (props) => {
 
     const showCardDetails = () => {
+        try {
+            
+        } catch (error) {
+            
+        }
         props.boardStore.setClickedBoard(props.board.id);
     }
 

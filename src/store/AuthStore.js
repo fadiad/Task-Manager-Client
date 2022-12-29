@@ -2,16 +2,28 @@ import { observable, action, makeAutoObservable } from "mobx";
 
 export class AuthStore {
   constructor() {
-    this.userDate = {};
-    
+    this.userData = {};
+    this.listOfBoards = []
+
     makeAutoObservable(this, {
-      userDate: observable,
-      setAuth:action,
+      userData: observable,
+      listOfBoards: observable,
+      setListOfBoards: action,
+      setAuth: action,
     });
   }
- 
-  setAuth=(data)=>{
-      const {userDTO,token}=data;
-      console.log(userDTO,token);
+
+  setAuth = (data) => {
+    const newData={}
+    const { userDTO, token } = data;
+    newData.userDTO=userDTO
+    newData.token=token 
+    console.log(newData);
+    this.userData=newData
   }
+
+  setListOfBoards=(boards)=>{
+      this.listOfBoards=boards
+  }
+
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -6,41 +6,84 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-//----------Select----------
-import InputLabel from "@mui/material/InputLabel";
+import { itemsTypes } from "../../utils/utils";
 //--------------------
 import { observer, inject } from "mobx-react";
-
-import { Bell } from "react-feather";
+import { Bell, Plus, Minus } from "react-feather";
 
 import axios from "../../api/axios";
-import Dropdown from "../../components/Dropdown/Dropdown";
-const CREATE_BOARD = "/user/board-create";
-
+import './Dashboard.css'
 function ChoseItemTypes(props) {
 
   const [open, setOpen] = useState(false);
+  const [itemTypes, setItemTypes] = useState([]);
   const theme = useTheme();
   const [showDropdownTypes, setShowDropdownTypes] = useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [listOfTypes, setListOfTypes] = useState(['TASK',
-    'BUG',
-    'SUBTASK',
-    'TESTING',])
+  const [listOfTypes, setListOfTypes] = useState({})
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setOpen(true)
+    // setItemTypes(props.itemTypes)
   };
+
+  useEffect(() => {
+    //  setItemTypes(props.itemTypes)
+    console.log(props.itemTypes);
+  }, [])
 
   const handleClose = () => {
     setOpen(false);
   };
 
+
+  const addItem = (type) => {
+    console.log(type);
+    axios.post(
+      `/board/add-itemType?boardId=${props.boardStore.board.id}`, { type: type }, {
+      headers: {
+        Authorization: "Bearer " + props.authStore.userData.token,
+      },
+    }).then(function (response) {
+      if (response.status >= 200 && response.status < 400) {
+        props.boardStore.addItemType(type);
+      } else {
+        console.log("fail to add");
+      }
+
+    }).catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  const deleteItem = (type) => {
+    console.log(type);
+    axios.put(
+      `/board/delete-itemType?boardId=${props.boardStore.board.id}`, { type: type }, {
+      headers: {
+        Authorization: "Bearer " + props.authStore.userData.token,
+      },
+    }).then(function (response) {
+      console.log(response.data);
+
+      if (response.status >= 200 && response.status < 400) {
+        props.boardStore.deleteItemType(type);
+      } else {
+        console.log("fail to add");
+      }
+
+    }).catch(function (error) {
+      console.log(error);
+    });
+  }
+
+
+
   return (
     <div className="creactNewBoard">
 
-      <span variant="outlined" onClick={handleClickOpen}>
+      <span className="notifications-icon" variant="outlined" onClick={handleClickOpen}>
         <Bell size={30} color="white" />
       </span>
 
@@ -70,29 +113,27 @@ function ChoseItemTypes(props) {
               setShowDropdownTypes(prev => !prev)
             }}
           >
-            {/* <div className="cardinfo-box-title">
-              <p>chose task types</p>
-            </div> */}
-            {showDropdownTypes && (
-              <Dropdown
-                style="left-drop"
-                class="board-dropdown"
-                onClose={(event) => {
-                  event.stopPropagation();
-                  setShowDropdownTypes(false)
-                }}
-              >
-                
-                {listOfTypes.map(type => <p>{type}</p>)}
-              </Dropdown>
-            )}
+
+            {itemsTypes.map((type, index) => {
+
+              return (<p className="item-type" key={index}>
+                <span className="item">{type}</span>
+                <span className="item-icon">
+                  {
+                    props.boardStore.board.itemTypes.find((t) => t === type)
+
+                      ? <Minus size={"13px"} onClick={() => deleteItem(type)} />
+                      : <Plus size={"13px"} onClick={() => addItem(type)} />
+                  }
+                </span>
+              </p>)
+            })}
+
           </div>
         </DialogContent>
 
         <DialogActions>
-          {/* <Button autoFocus onClick={createBoard}>
-            Update
-          </Button> */}
+
 
           <Button onClick={handleClose} autoFocus>
             Cancle
@@ -103,4 +144,4 @@ function ChoseItemTypes(props) {
   );
 }
 
-export default inject("boardStore")(observer(ChoseItemTypes));
+export default inject("boardStore", "authStore")(observer(ChoseItemTypes));

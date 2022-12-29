@@ -1,101 +1,143 @@
-
-import { observable, action, makeAutoObservable } from 'mobx'
-import axios from '../api/axios'
+import { observable, action, makeAutoObservable } from "mobx";
+import axios from "../api/axios";
 
 export class BoardStore {
+  constructor() {
+    this.listOfStatuses = [];
+    this.clickedBoardId = 0;
 
-    constructor() {
-        this.listOfStatuses = []
-        this.clickedBoardId = 0
+    this.board = {};
+    this.usersOnBoard = [];
+    this.itemFilteredByStatus = {};
 
-        makeAutoObservable(this, {
-            listOfStatuses: observable,
-            clickedBoard: observable,
-            getStatusesList: action,
-            addCard: action,
-            addStatus: action,
-            passItem: action,
-        })
-    }
+    makeAutoObservable(this, {
+      listOfStatuses: observable,
+      clickedBoard: observable,
+      board: observable,
+      setBoard: action,
+      getStatusesList: action,
+      addCard: action,
+      addStatus: action,
+      passItem: action,
+      deleteStatusFromBoard: action,
+      deleteItemFromStatus: action,
+      updateItem: action,
+    });
+  }
 
-    setClickedBoard = (clickedBoardId) => {
-        this.clickedBoardId = clickedBoardId
-        console.log(this.clickedBoardId);
-    }
+  setBoard = (boardDetails) => {
+    this.board = boardDetails.board;
+    this.usersOnBoard = boardDetails.usersOnBoard;
+    console.log("boardDetails.useresOnBoard : ", boardDetails.useresOnBoard);
+    this.itemFilteredByStatus = boardDetails.itemFilteredByStatus;
 
-    getStatusesList = () => {
-        let list = [
-            {
-                title: "TODO",
-                id: 0,
-                cards: [
-                    {
-                        id: 2,
-                        text: "login front and back ends"
-                    },
-                    {
-                        id: 3,
-                        text: "registration"
-                    }
-                ]
-            },
-            {
-                title: "INPROGRESS",
-                id: 1,
-                cards: [
-                    {
-                        id: 4,
-                        text: "abdasdasdasd"
-                    },
-                    {
-                        id: 5,
-                        text: "weqweqweqwe"
-                    }
-                ]
-            }
-        ]
+  };
 
-        this.listOfStatuses = [...list];
-    }
+  setClickedBoard = (clickedBoardId) => {
+    this.clickedBoardId = clickedBoardId;
+    console.log(this.clickedBoardId);
+  };
 
-    addCard = (id, text) => {
-        const newList = [...this.listOfStatuses]
-        const section = newList.find(s => s.id === id)
-        section.cards.push({ id, text })
-        this.listOfStatuses = newList;
-    }
+  getStatusesList = () => {
+    let list = [
+      {
+        title: "TODO",
+        id: 0,
+        cards: [
+          {
+            id: 2,
+            text: "login front and back ends",
+          },
+          {
+            id: 3,
+            text: "registration",
+          },
+        ],
+      },
+      {
+        title: "INPROGRESS",
+        id: 1,
+        cards: [
+          {
+            id: 4,
+            text: "abdasdasdasd",
+          },
+          {
+            id: 5,
+            text: "weqweqweqwe",
+          },
+        ],
+      },
+    ];
 
-    addStatus = (title) => {
-        const newList = [...this.listOfStatuses]
-        this.listOfStatuses.push(
-            {
-                title: title,
-                id: 5,
-                cards: []
-            }
-        )
-    }
+    this.listOfStatuses = [...list];
+  };
 
+  addCard = (id, text) => {
+    const newList = [...this.listOfStatuses];
+    const section = newList.find((s) => s.id === id);
+    section.cards.push({ id, text });
+    this.listOfStatuses = newList;
+  };
 
-    passItem = (source, destination) => {
-   
-    }
+  addStatus = (statuses) => {
+    const boardTemp = JSON.parse(JSON.stringify(this.board));
+    boardTemp["statues"] = statuses;
+    statuses.forEach((status) => {
+      if (!this.itemFilteredByStatus[status.id]) {
+        this.itemFilteredByStatus[status.id] = [];
+      }
+    });
+    this.board = boardTemp;
+  };
 
-    createBoard = async (title, types) => {
-        console.log(title, types);
-        const body = {
-            title: title,
-            types: types
-        }
+  addItemToStatus = (item) => {
+    const items = JSON.parse(
+      JSON.stringify(this.itemFilteredByStatus[item.statusId])
+    );
+    items.push(item);
+    this.itemFilteredByStatus[item.statusId] = items;
+  };
 
-        // let data = await fetch(`http://localhost:8080/`, {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(body)
-        // })
+  deleteStatusFromBoard = (status) => {
+    const newStatues = this.board.statues.filter((s) => s.id !== status.id);
+    const tempItemFilteredByStatus = JSON.parse(
+      JSON.stringify(this.itemFilteredByStatus)
+    );
+    delete tempItemFilteredByStatus[status.id];
+    this.board.statues = newStatues;
+  };
 
-    }
+  createBoard = async (title, types) => {
+    console.log(title, types);
+    const body = {
+      title: title,
+      types: types,
+    };
+  };
+
+  deleteItemFromStatus = (statusId, itemId) => {
+    const items = this.itemFilteredByStatus[statusId].filter(i => i.id !== itemId)
+    this.itemFilteredByStatus[statusId] = items;
+  }
+
+  updateItem = (statusId, itemId, updatedItem) => {
+    console.log(statusId, itemId, updatedItem);
+    const items = this.itemFilteredByStatus[statusId].filter(i => i.id !== itemId)
+    items.push(updatedItem)
+    this.itemFilteredByStatus[statusId] = items
+  }
+
+  deleteItemType = (type) => {
+    const boardTemp = JSON.parse(JSON.stringify(this.board));
+    boardTemp.itemTypes = boardTemp.itemTypes.filter((i) => i != type);
+    this.board = boardTemp;
+  }
+
+  addItemType = (type) => {
+    const boardTemp = JSON.parse(JSON.stringify(this.board));
+    boardTemp.itemTypes.push(type)
+    this.board = boardTemp;
+  }
 
 }
-
-

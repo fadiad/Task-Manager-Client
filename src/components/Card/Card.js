@@ -42,7 +42,7 @@ function Card(props) {
 
           <div className="card-top-labels">
             {itemTypes.find(type => type === itemType) ?
-              <span style={{ "background-color": colorsList[itemType], borderRadius: "5px", padding: "5px" }}>{itemType}</span>
+              <span style={{ "backgroundColor": colorsList[itemType], borderRadius: "5px", padding: "5px" }}>{itemType}</span>
               : null
             }
           </div>

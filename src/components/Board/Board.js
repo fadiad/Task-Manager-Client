@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MoreHorizontal } from "react-feather";
+import { observer, inject } from 'mobx-react'
 
 import Card from "../Card/Card";
 import Dropdown from "../Dropdown/Dropdown";
@@ -12,7 +13,7 @@ import ChoseNotifications from "../../pages/Home/ChoseItemTypes";
 
 function Board(props) {
   const {
-    board,
+    status,
     addCard,
     removeBoard,
     removeCard,
@@ -20,9 +21,11 @@ function Board(props) {
     onDragEnter,
     updateCard,
     itemTypes,
-    useresOnBoard,
+    // useresOnBoard,
   } = props;
+  const board = status;
 
+  const cards = props.boardStore.itemFilteredByStatus[board.id];
   const [showDropdown, setShowDropdown] = useState(false);
 
   return (
@@ -59,7 +62,7 @@ function Board(props) {
           </div>
         </div>
         <div className="board-cards custom-scroll">
-          {board?.cards?.map((item) => (
+          {cards?.map((item) => (
             <Card
               key={item.id}
               card={item}
@@ -69,7 +72,7 @@ function Board(props) {
               onDragEnd={onDragEnd}
               updateCard={updateCard}
               itemTypes={itemTypes}
-              useresOnBoard={useresOnBoard}
+              // useresOnBoard={useresOnBoard}
             />
           ))}
           <CustomInput
@@ -85,5 +88,6 @@ function Board(props) {
 
   );
 }
+export default inject("boardStore")(observer(Board))
 
-export default Board;
+

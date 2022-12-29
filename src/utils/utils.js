@@ -35,10 +35,10 @@ export const hints = {
 }
 
 export const itemsTypes = [
-  "TASK",
-  "BUG",
-  "SUBTASK",
-  "TESTING",
+  'TASK',
+  'BUG',
+  'SUBTASK',
+  'TESTING',
 ]
 export const notificationsTypes = [
   'ITEM_ASSIGNED_TO_ME',
