@@ -8,6 +8,16 @@
     padding: 1rem 0.5rem;
 }
 
+.git-hub-container{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.git-hub-container:hover{
+    cursor: pointer;
+    color: rgb(36, 187, 238);
+}
 section {
     width: 100%;
     max-width: 420px;

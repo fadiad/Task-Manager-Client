@@ -7,6 +7,7 @@ import Unauthorized from './components/Unauthorized/Unauthorized';
 import Missing from './components/Unauthorized/Missing';
 import User from "./pages/User/User";
 import Dashboard from './pages/Home/Dashboard';
+import LoadingPage from "./pages/loadingPage/LoadingPage";
 
 function App() {
   return (
@@ -17,8 +18,9 @@ function App() {
         <Route path="register" element={<Register />} />
         <Route path="unauthorized" element={<Unauthorized />} />
         {/* <Route path="/" element={<User />} /> */}
-        <Route path="/board" element={<Dashboard/>} /> 
-        <Route path="/user" element={<User/>} /> 
+        <Route path="/board/:boardId" element={<Dashboard/>} /> 
+        <Route path="/loading" element={<LoadingPage/>} /> 
+        <Route path="/" element={<User/>} /> 
         {/* { we want to protect these routes
         <Route element={<RequireAuth />}>
           <Route path="/" element={<MainChat />} />

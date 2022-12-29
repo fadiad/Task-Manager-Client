@@ -3,8 +3,9 @@ import "../Register/Style.css";
 import axios from "../../api/axios";
 import { regexObj } from "../../utils/utils";
 import { observer, inject } from 'mobx-react'
+import {GitHub} from "react-feather";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-const LOGIN_URL = "/auth/login";
+const LOGIN_URL = "/auth/login_User";
 
 const Login = (props) => {
   const userRef = useRef();
@@ -49,6 +50,10 @@ const Login = (props) => {
     }
   };
 
+  const loginWithGit =()=>{
+    window.location.assign("https://github.com/login/oauth/authorize?client_id=f21614ae68732a9a2cc0&scope=user:email%20user:name")
+  }
+
   return (
     <div className="main">
       <section>
@@ -83,7 +88,10 @@ const Login = (props) => {
 
           <button>Sign in</button>
         </form>
-        <Link to="/login-guest">Log in as guest</Link>
+        <div className="git-hub-container" onClick={loginWithGit}>
+          <GitHub size={30} />
+          <p>Log in with GitHub</p>
+        </div>
         <br />
         <p>
           Don't have an account?

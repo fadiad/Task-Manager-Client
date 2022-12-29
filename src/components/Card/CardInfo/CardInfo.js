@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Calendar, CheckSquare, List, Tag, Trash, Type } from "react-feather";
-import { colorsList } from "../../../utils/utils";
 import Modal from "../../Modal/Modal";
-import { ChevronDown, ChevronUp } from "react-feather";
 import Button from "@mui/material/Button";
 import CustomInput from "../../CustomInput/CustomInput";
-
-import "./CardInfo.css";
-import Chip from "../../Common/Chip";
+import { observer, inject } from 'mobx-react'
 import Dropdown from "../../Dropdown/Dropdown";
-
 import axios from "../../../api/axios";
 
+import "./CardInfo.css";
 
 function CardInfo(props) {
 
-  const { onClose, card, boardId, updateCard, itemTypes, useresOnBoard } = props;
-
+  const { onClose, card, boardId, updateCard, itemTypes } = props; // useresOnBoard
+  // console.log("useresOnBoard : " , useresOnBoard);
   const [showDropdownUsers, setShowDropdownUsers] = useState(false);
   const [showDropdownTypes, setShowDropdownTypes] = useState(false);
   const [showDropdownImportance, setShowDropdownImportance] = useState(false);
 
-  const [listOfUsers, setListOfUsers] = useState([...useresOnBoard])
+  // const [listOfUsers, setListOfUsers] = useState([...useresOnBoard])
 
   const [listOfTypes, setlistOfTypes] = useState([...itemTypes])
 
@@ -132,7 +128,7 @@ function CardInfo(props) {
 
   const updateAssignTo = async (userId, itemId, name) => {// item-assignTO/{boardId}
 
-    const response = await axios.put(`/item/item-assignTO/4?itemId=${card.id}&userId=${userId}`,).then(function (response) {
+    const response = await axios.put(`/item/item-assignTO?boardId=4&itemId=${card.id}&userId=${userId}`,).then(function (response) {
       if (response.status >= 200 && response.status <= 400) {
         setCardValues({ ...cardValues, assignTo: { id: userId, username: name } });
         // updateCardDetails();
@@ -151,6 +147,11 @@ function CardInfo(props) {
     console.log(cardValues.id, cardValues);
     updateCard(boardId, cardValues.id, cardValues);
   }
+
+
+  // if (!props.boardStore.useresOnBoard) {
+  //   return null;
+  // }
 
   return (
     <Modal onClose={onClose}>
@@ -224,7 +225,8 @@ function CardInfo(props) {
                   setShowDropdownUsers(false)
                 }}
               >
-                {listOfUsers.map(user => <p onClick={() => updateAssignTo(user.id, card.id, user.username)}>{user.username}</p>)}
+                {props.boardStore.useresOnBoard.map(user => <p key={card.id} onClick={() => updateAssignTo(user.id, card.id, user.username)}>{user.username}</p>)}
+
               </Dropdown>
             )}
           </div>
@@ -302,7 +304,7 @@ function CardInfo(props) {
           />
         </div>
 
-        <div style={{ "text-align": "center" }}>
+        <div style={{ "textAlign": "center" }}>
           <Button onClick={() => updateCardDetails()}>Update</Button>
           <Button onClick={onClose}>Cancle</Button>
         </div>
@@ -329,4 +331,4 @@ function CardInfo(props) {
   );
 }
 
-export default CardInfo;
+export default inject("boardStore")(observer(CardInfo))
